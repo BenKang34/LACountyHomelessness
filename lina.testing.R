@@ -1,7 +1,5 @@
 library(shiny)
-library(dplyr)
 library(ggplot2)
-library(lubridate)
 library(tidycensus)
 library(tidyverse)
 library(leaflet)
@@ -58,40 +56,103 @@ calls311_count<-calls311 %>%
   summarize(count_311calls=n())
 
 
-##Merge hc2017_ct_subset and the geo information from lapop
+##Merge hc2017_ct_subset and the GIOID information from lapop
 hc2017_ct_subset<-full_join(x=hc2017_ct_subset,y=lapop[c(1, 7)], by=c("tract" = "ct"))
+hc2016_ct_subset<-full_join(x=hc2016_ct_subset,y=lapop[c(1, 7)], by=c("censusTract" = "ct"))
 crime_count <- full_join(x=crime_count, y = lapop[c(1, 7)], by=c("CT10" = "ct"))
-calls311 = full_join(x = calls311, y = lapop[c(1, 7)], by = c("CT10" = "ct"))
+calls311_count = full_join(x = calls311_count, y = lapop[c(1, 7)], by = c("CT10" = "ct"))
 
 
-###testing drawing a map
+###The following code merge the data with the geospatial dataframe, and creating merged
+### geospatial dataframe objects, which can be used to create polygons in leaflet
+
 library(tigris)
 library(acs)
-library(stringr)
 
+
+# use county names in the tigris package but to grab the spatial data (tigris)
 tracts<-tracts(state="CA", county="Los Angeles", cb = TRUE)
-hc_merged<-geo_join(tracts, hc2017_ct_subset, "GEOID", "GEOID")
+##Merge the hc, crime, 311 data with tracts geo data, create a spatial poygons Data frame
+hc2017_merged<-geo_join(tracts, hc2017_ct_subset, "GEOID", "GEOID")
+hc2016_merged<-geo_join(tracts, hc2016_ct_subset, "GEOID", "GEOID")
+crime_merged<-geo_join(tracts, crime_count, "GEOID", "GEOID")
+calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 
-pal <- colorNumeric(
-  palette = "YlGnBu",
-  domain = hc_merged$totYouthFamHH
+
+###Make a map of homeless count
+
+pal1 <- colorNumeric(
+  palette = "YlOrRd",
+  domain = hc2017_ct_subset$totUnsheltPeople
 )
 
-map3<-leaflet() %>%
+map1<-leaflet() %>%
   addProviderTiles("CartoDB.Positron") %>%
-  addPolygons(data = hc_merged, 
-              fillColor = ~pal(totYouthFamHH), 
+  addPolygons(data = hc2017_merged, 
+              fillColor = ~pal1(totUnsheltPeople), 
               color = "#b2aeae", # you need to use hex colors
               fillOpacity = 0.7, 
               weight = 1, 
-              smoothFactor = 0.2,
-              popup = "testing") %>%
-  addLegend(pal = pal, 
-            values = hc_merged$totYouthFamHH, 
+              smoothFactor = 0.2) %>%
+  addLegend(pal = pal1, 
+            values = hc2017_merged$totUnsheltPeople, 
             position = "bottomright", 
-            title = "Total Youth Family House Hold",
-            labFormat = labelFormat(suffix = "")) 
+            title = "Total Unsheltered People"
+            #labFormat = labelFormat(suffix = "")
+            ) 
+map1
+
+
+
+
+
+###Make a map of 311 calls
+pal2 <- colorNumeric(
+  palette = "YlOrRd",
+  domain = calls311_merged$count_311calls
+)
+
+map2<-leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(data = calls311_merged, 
+              fillColor = ~pal2(count_311calls), 
+              color = "#b2aeae", # you need to use hex colors
+              fillOpacity = 0.7, 
+              weight = 1, 
+              smoothFactor = 0.2) %>%
+  addLegend(pal = pal2, 
+            values = calls311_merged$count_311calls, 
+            position = "bottomright", 
+            title = "Total 311 calls"
+           # labFormat = labelFormat(suffix = "")
+            ) 
+map2
+
+##Make a map of crime count
+
+
+
+###Make a map of 311 calls
+pal3 <- colorNumeric(
+  palette = "YlOrRd",
+  domain = crime_merged$count_crime)
+
+map3<-leaflet() %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addPolygons(data = crime_merged, 
+              fillColor = ~pal3(count_crime), 
+              color = "#b2aeae", # you need to use hex colors
+              fillOpacity = 0.7, 
+              weight = 1, 
+              smoothFactor = 0.2 ) %>%
+  addLegend(pal = pal2, 
+            values = crime_merged$count_crime, 
+            position = "bottomright", 
+            title = "Total crime count 2016-2017"
+            # labFormat = labelFormat(suffix = "")
+  ) 
 map3
+
 
 
 #runApp("./dashboard")
