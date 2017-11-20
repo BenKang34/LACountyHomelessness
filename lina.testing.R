@@ -3,7 +3,7 @@ library(ggplot2)
 library(tidycensus)
 library(tidyverse)
 library(leaflet)
-
+#library(eply)
 ###The following code read in datafiles and create new measures and extra features
 
 ###Step 1: Read in the data files
@@ -63,6 +63,9 @@ crime_count <- full_join(x=crime_count, y = lapop[c(1, 7)], by=c("CT10" = "ct"))
 calls311_count = full_join(x = calls311_count, y = lapop[c(1, 7)], by = c("CT10" = "ct"))
 
 
+###Remove the datasets that are not needed to save memory
+
+
 ###The following code merge the data with the geospatial dataframe, and creating merged
 ### geospatial dataframe objects, which can be used to create polygons in leaflet
 
@@ -84,33 +87,78 @@ calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 
 ###Make a map of homeless count
 
-pal1 <- colorNumeric(
-  palette = "YlOrRd",
-  domain = hc2017_ct_subset$totUnsheltPeople
-)
+###get the names of all homeless count measures
+vars<-colnames(hc2017_ct_subset[5:12])
+titles<-c("Total homeless", 
+          "Total unsheltered people", 
+          "Total Sheltered people",
+          "Total Street Single Adult",
+          "Total Street Family Members",
+          "Total Youth Family Households",
+          "Total Unaccompanied Kids in Shelters",
+          "Total Single Youth in Shelters")
 
-map1<-crime %>%
-  leaflet() %>%
-  addProviderTiles("CartoDB.Positron") %>%
-  addPolygons(data = hc2017_merged, 
-              fillColor = ~pal1(totUnsheltPeople), 
-              color = "#b2aeae", # you need to use hex colors
-              fillOpacity = 0.7, 
-              weight = 1, 
-              smoothFactor = 0.2) %>%
-  addLegend(pal = pal1, 
-            values = hc2017_merged$totUnsheltPeople, 
-            position = "bottomright", 
-            title = "Total Unsheltered People"
-            #labFormat = labelFormat(suffix = "")
-            ) %>%
-  addMarkers(~LONGITUDE, ~LATITUDE,
-    clusterOptions = markerClusterOptions()
+
+###a function that takes in a homeless count measure, 
+###and return a color pallette based on the data
+palfun<-function(hc){
+  pal<-colorNumeric(
+    palette = "YlOrRd",
+    domain = hc2017_merged@data[hc]
   )
-map1
+}
 
+###a function that take in a dataset and homeless count measure, and create a map
+###including both homeless count, crime count and shelters
 
+hcmapTool<-function(data,hc){
+  ##creat a palette for the hc variable  
+  pal=palfun(hc)
+  leaflet() %>%
+    ## Base Groups
+    addProviderTiles("CartoDB.Positron", group="County Map") %>% 
+    addPolygons(data = data, 
+                fillColor = ~pal(data@data[hc]), 
+                color = "#b2aeae", # you need to use hex colors
+                fillOpacity = 0.7, 
+                weight = 1, 
+                smoothFactor = 0.2,
+                label=~as.character(unlist(data@data[hc])),
+                highlightOptions=highlightOptions(color="black", 
+                                                  weight=2,
+                                                  bringToFront=TRUE),
+                group="Homeless Density")%>%
+    addLegend(pal = pal, 
+              values =unlist(data@data[hc]), 
+              position = "bottomright", 
+              title = titles[match(hc, vars)] #the the index of hc, and then get the title
+              #labFormat = labelFormat(suffix = "")
+              #  group="Homeless Density Legend"
+    ) %>%
+    addMarkers(data=crime, ~LONGITUDE, ~LATITUDE,
+               label="crime",
+               labelOptions=labelOptions(style=list("color"="red")),
+               clusterOptions=markerClusterOptions(),
+               group="Crime Count 2016~2017") %>%
+    addMarkers(data=shelter, ~LONGITUDE, ~LATITUDE,
+               group="Shelters") %>%
+    addLayersControl(
+      baseGroups="County Map",
+      overlayGroups=c("Homeless Density", 
+                      "Crime Count 2016~2017",
+                      "Shelters"),
+      options=layersControlOptions(collapsed=FALSE)
+    )
+}
 
+###remove the datasets that are not needed to save memory
+rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset, lapop)
+
+###create four maps
+hcmapTool(hc2017_merged,"totUnsheltPeople")
+hcmapTool(hc2017_merged,"totSheltPeople")
+hcmapTool(hc2017_merged,"totStreetSingAdult")
+hcmapTool(hc2017_merged,"totStreetFamMem")
 
 
 ###Make a map of 311 calls
