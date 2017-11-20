@@ -151,6 +151,7 @@ hcmapTool<-function(data,hc){
 ###remove the datasets that are not needed to save memory
 rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset, lapop)
 
+###create four maps
 hcmapTool(hc2017_merged,"totUnsheltPeople")
 hcmapTool(hc2017_merged,"totSheltPeople")
 hcmapTool(hc2017_merged,"totStreetSingAdult")
