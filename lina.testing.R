@@ -81,6 +81,9 @@ hc2016_merged<-geo_join(tracts, hc2016_ct_subset, "GEOID", "GEOID")
 crime_merged<-geo_join(tracts, crime_count, "GEOID", "GEOID")
 calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 
+#hc2017_merged<-geo_join(hc2017_merged, crime_merged, "GEOID", "GEOID")
+#hc2017_merged<-geo_join(hc2017_merged, calls311_merged, "GEOID", "GEOID")
+
 
 ###Make a map of homeless count
 
@@ -156,8 +159,6 @@ hcmapTool(hc2017_merged,"totUnsheltPeople")
 hcmapTool(hc2017_merged,"totSheltPeople")
 hcmapTool(hc2017_merged,"totStreetSingAdult")
 hcmapTool(hc2017_merged,"totStreetFamMem")
-
-
 
 
 ###Make a map of 311 calls
