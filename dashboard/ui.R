@@ -26,9 +26,7 @@ body = dashboardBody(
   # and then include the columns inside the Row(fluidRow)
   tabItems(
     tabItem(tabName = "dashboard",
-            h2("Dashboard tab content")),
-    tabItem(tabName = "homelessness",
-            h2("Homelessness tab content"),
+            h2("Dashboard tab content"),
             
             #Main Display
             fluidRow(
@@ -58,6 +56,8 @@ body = dashboardBody(
                                      choices = c("DR.NUMBER", "b", "c"),
                                      selected = "totUnsheltPeople"))))
     ),
+    tabItem(tabName = "dashboard",
+            h2("Homelessness tab content")),
     tabItem(tabName = "shelter",
             h2("Shelter tab content")),
     tabItem(tabName = "crime",

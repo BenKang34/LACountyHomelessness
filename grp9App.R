@@ -1,11 +1,9 @@
 library(shiny)
-library(dplyr)
 library(ggplot2)
-library(lubridate)
 library(tidycensus)
 library(tidyverse)
 library(leaflet)
-
+#library(eply)
 ###The following code read in datafiles and create new measures and extra features
 
 ###Step 1: Read in the data files
@@ -58,42 +56,48 @@ calls311_count<-calls311 %>%
   summarize(count_311calls=n())
 
 
-##Merge hc2017_ct_subset and the geo information from lapop
+##Merge hc2017_ct_subset and the GIOID information from lapop
 hc2017_ct_subset<-full_join(x=hc2017_ct_subset,y=lapop[c(1, 7)], by=c("tract" = "ct"))
+hc2016_ct_subset<-full_join(x=hc2016_ct_subset,y=lapop[c(1, 7)], by=c("censusTract" = "ct"))
 crime_count <- full_join(x=crime_count, y = lapop[c(1, 7)], by=c("CT10" = "ct"))
-calls311 = full_join(x = calls311, y = lapop[c(1, 7)], by = c("CT10" = "ct"))
+calls311_count = full_join(x = calls311_count, y = lapop[c(1, 7)], by = c("CT10" = "ct"))
 
 
-###testing drawing a map
+###Remove the datasets that are not needed to save memory
+
+
+###The following code merge the data with the geospatial dataframe, and creating merged
+### geospatial dataframe objects, which can be used to create polygons in leaflet
+
 library(tigris)
 library(acs)
-library(stringr)
 
+
+# use county names in the tigris package but to grab the spatial data (tigris)
 tracts<-tracts(state="CA", county="Los Angeles", cb = TRUE)
-hc_merged<-geo_join(tracts, hc2017_ct_subset, "GEOID", "GEOID")
+##Merge the hc, crime, 311 data with tracts geo data, create a spatial poygons Data frame
+hc2017_merged<-geo_join(tracts, hc2017_ct_subset, "GEOID", "GEOID")
+hc2016_merged<-geo_join(tracts, hc2016_ct_subset, "GEOID", "GEOID")
+crime_merged<-geo_join(tracts, crime_count, "GEOID", "GEOID")
+calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 
-pal <- colorNumeric(
-  palette = "YlGnBu",
-  domain = hc_merged$totYouthFamHH
-)
+#hc2017_merged<-geo_join(hc2017_merged, crime_merged, "GEOID", "GEOID")
+#hc2017_merged<-geo_join(hc2017_merged, calls311_merged, "GEOID", "GEOID")
 
-map3<-leaflet() %>%
-  addProviderTiles("CartoDB.Positron") %>%
-  addPolygons(data = hc_merged, 
-              fillColor = ~pal(totYouthFamHH), 
-              color = "#b2aeae", # you need to use hex colors
-              fillOpacity = 0.7, 
-              weight = 1, 
-              smoothFactor = 0.2,
-              popup = "testing") %>%
-  addLegend(pal = pal, 
-            values = hc_merged$totYouthFamHH, 
-            position = "bottomright", 
-            title = "Total Youth Family House Hold",
-            labFormat = labelFormat(suffix = "")) 
-map3
+###get the names of all homeless count measures
+vars<-colnames(hc2017_ct_subset[5:12])
+titles<-c("Total homeless", 
+          "Total unsheltered people", 
+          "Total Sheltered people",
+          "Total Street Single Adult",
+          "Total Street Family Members",
+          "Total Youth Family Households",
+          "Total Unaccompanied Kids in Shelters",
+          "Total Single Youth in Shelters")
 
+###remove the datasets that are not needed to save memory
+rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset, lapop)
 
-#runApp("./dashboard")
+runApp("./dashboard")
 
 
