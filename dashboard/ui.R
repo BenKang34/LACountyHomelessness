@@ -61,8 +61,17 @@ body = dashboardBody(
     tabItem(tabName = "shelter",
             h2("Shelter tab content")),
     tabItem(tabName = "crime",
-            h2("Crime tab content"))
-  )
+            fluidRow(
+              box(leafletOutput("map_crime", height = 300,width=400)),
+              
+              box(
+                title = "Time Interval",
+                sliderInput("range", "Choose the time interval when the crime happened", 0, 24, value=c(4,18))
+              )
+            )
+    )
+    
+)
 )
 
 dashboardPage(
