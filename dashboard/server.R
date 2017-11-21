@@ -11,37 +11,38 @@ library(sf)
 
 ###a function that takes in a homeless count measure, 
 ###and return a color pallette based on the data
-palfunc<-function(hc){
+palfunc<-function(LAmapdata, hc){
   pal<-colorNumeric(
     palette = "YlOrRd",
-    domain = hc2017_merged@data[hc]
+    domain = LAmapdata@data[hc]
   )
 }
 
 ###a function that take in a dataset and homeless count measure, and create a map
 ###including both homeless count, crime count and shelters
 
-hcmapTool<-function(data,hc){
+hcmapTool<-function(LAmapdata,geolevel,hc){
   ##creat a palette for the hc variable  
-  pal=palfunc(hc)
+  pal=palfunc(LAmapdata,hc)
   leaflet() %>%
     ## Base Groups
     addProviderTiles("CartoDB.Positron", group="County Map") %>% 
-    addPolygons(data = data, 
-                fillColor = ~pal(data@data[hc]), 
+    addPolygons(data = LAmapdata, 
+                fillColor = ~pal(LAmapdata@data[hc]), 
                 color = "#b2aeae", # you need to use hex colors
                 fillOpacity = 0.7, 
                 weight = 1, 
                 smoothFactor = 0.2,
-                label=~paste("Count of Homelessness:",unlist(data@data[ifelse(str_detect(hc,"LN"), 
-                                                            substr(hc, start = 3, stop = str_length(hc)),
-                                                            hc)])),
+                label=~paste(unlist(LAmapdata@data[geolevel]),
+                             unlist(LAmapdata@data[ifelse(str_detect(hc,"LN"),
+                                                     substr(hc, start = 3, stop = str_length(hc)),
+                                                     hc)])),
                 highlightOptions=highlightOptions(color="black", 
                                                   weight=2,
                                                   bringToFront=TRUE),
                 group="Homeless Density")%>%
     addLegend(pal = pal, 
-              values =unlist(data@data[hc]), 
+              values =unlist(LAmapdata@data[hc]), 
               position = "bottomright", 
               title = titles[match(hc, vars)] #the the index of hc, and then get the title
               #labFormat = labelFormat(suffix = "")
@@ -55,7 +56,7 @@ hcmapTool<-function(data,hc){
     addMarkers(data=shelter, ~LONGITUDE, ~LATITUDE,
                group="Shelters") %>%
     addLayersControl(
-      baseGroups="County Map",
+      #baseGroups="County Map",
       overlayGroups=c("Homeless Density", 
                       "Crime Count 2016~2017",
                       "Shelters"),
@@ -70,19 +71,29 @@ function(input, output) {
   
   ### Dashboard Page
   output$map = renderLeaflet({
+    inputDataset = switch(input$geolevel,
+                          'CensusTract' = hc2017_merged,
+                          'Community' = hc2017_merged.Community,
+                          'City' = hc2017_merged.City
+                          )
+    inputGeolevel = switch(input$geolevel,
+                          'CensusTract' = "tract",
+                          'Community' = "Community",
+                          'City' = "City"
+                          )
     category_HC = switch(input$catHC,
                          "Total Homeless People" = "totPeople", 
                          "Total Unsheltered People" = "totUnsheltPeople",
+                         "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
+                         "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople",
                          "Total Sheltered People" = "totSheltPeople",
                          "Total Street Single Adult" = "totStreetSingAdult",
                          "Total Street Family Members" = "totStreetFamMem",
                          "Total Youth Family Households" = "totYouthFamHH",
                          "Total Unaccompanied Kids in Shelters" = "totUnAccMinor_sheltered",
-                         "Total Single Youth in Shelters" = "totSingleYouth_sheltered",
-                         "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
-                         "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople")
+                         "Total Single Youth in Shelters" = "totSingleYouth_sheltered")
 
-    hcmapTool(hc2017_merged,category_HC)
+    hcmapTool(inputDataset,inputGeolevel,category_HC)
   })
   ### Homelessness Page
   

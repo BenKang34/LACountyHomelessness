@@ -41,20 +41,21 @@ body = dashboardBody(
                          selectInput("geolevel", 
                                      "Choose the geographical level:",
                                      choices = c(
-                                       'Cencus Tract Level' = 'tract',
-                                       'Community Level' = 'Community_Name'
+                                       'City' = 'City',
+                                       'Community' = 'Community',
+                                       'Census Tract' = 'CensusTract'
                                      ),
-                                     selected = 'Community_Name'
-                         ),
-                         p(
-                           class = "text-muted",
-                           paste("some random text for geo level")
-                         )
+                                     selected = 'City'
+                         )#,
+                         #p(
+                        #   class = "text-muted",
+                        #   paste("some random text for geo level")
+                        # )
                          #,actionButton("zoomButton", "Zoom to fit buses")
                      ),
                      box(width = NULL, status = "warning",
                          selectInput("catHC",
-                                     label = "Choose category of homeless people",
+                                     label = "Choose the category of homeless people",
                                      choices = titles,
                                      selected = "Total Unsheltered People"))))
     ),

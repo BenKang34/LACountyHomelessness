@@ -2,7 +2,7 @@ library(shiny)
 library(ggplot2)
 library(tidycensus)
 library(tidyverse)
-library(leaflet)
+library(maptools)
 #library(eply)
 ### The following code read in datafiles
 ### and create new measures and extra features
@@ -107,18 +107,29 @@ calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 #hc2017_merged<-geo_join(hc2017_merged, crime_merged, "GEOID", "GEOID")
 #hc2017_merged<-geo_join(hc2017_merged, calls311_merged, "GEOID", "GEOID")
 
+hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[5:14], list(Community = hc2017_ct_subset$Community_Name), sum)
+hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[5:14], list(City = hc2017_ct_subset$City), sum)
+
+hc2017_merged.Community <- unionSpatialPolygons(hc2017_merged, hc2017_merged@data$Community_Name)
+hc2017_merged.City <- unionSpatialPolygons(hc2017_merged, hc2017_merged@data$City)
+
+row.names(hc2017_ct_subset.comm) <- as.character(hc2017_ct_subset.comm$Community)
+row.names(hc2017_ct_subset.city) <- as.character(hc2017_ct_subset.city$City)
+hc2017_merged.Community <- SpatialPolygonsDataFrame(hc2017_merged.Community, hc2017_ct_subset.comm)
+hc2017_merged.City <- SpatialPolygonsDataFrame(hc2017_merged.City, hc2017_ct_subset.city)
+
 ###get the names of all homeless count measures
 vars<-colnames(hc2017_ct_subset[5:14])
 titles<-c("Total Homeless People", 
           "Total Unsheltered People", 
           "Total Sheltered People",
+          "Total Sheltered People(Log10 Scale)",
+          "Total Unsheltered People(Log10 Scale)",
           "Total Street Single Adult",
           "Total Street Family Members",
           "Total Youth Family Households",
           "Total Unaccompanied Kids in Shelters",
-          "Total Single Youth in Shelters",
-          "Total Sheltered People(Log10 Scale)",
-          "Total Unsheltered People(Log10 Scale)")
+          "Total Single Youth in Shelters")
 
 ###remove the datasets that are not needed to save memory
 rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset,
