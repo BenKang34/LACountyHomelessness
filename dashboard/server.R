@@ -74,5 +74,13 @@ function(input, output) {
     #hcmapTool(hc2017_merged,"totStreetSingAdult")
     #hcmapTool(hc2017_merged,"totStreetFamMem")
   })
+  output$map_crime = renderLeaflet({
+    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] )%>%
+      leaflet()%>%
+      addTiles%>%
+      addMarkers(~LONGITUDE, ~LATITUDE)
+    map_crime
+  })
 }
+
 
