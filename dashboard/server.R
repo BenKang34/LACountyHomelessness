@@ -33,7 +33,9 @@ hcmapTool<-function(data,hc){
                 fillOpacity = 0.7, 
                 weight = 1, 
                 smoothFactor = 0.2,
-                label=~as.character(unlist(data@data[hc])),
+                label=~paste("Count of Homelessness:",unlist(data@data[ifelse(str_detect(hc,"LN"), 
+                                                            substr(hc, start = 3, stop = str_length(hc)),
+                                                            hc)])),
                 highlightOptions=highlightOptions(color="black", 
                                                   weight=2,
                                                   bringToFront=TRUE),
@@ -58,16 +60,18 @@ hcmapTool<-function(data,hc){
                       "Crime Count 2016~2017",
                       "Shelters"),
       options=layersControlOptions(collapsed=FALSE)
-    )
+    ) %>%
+    hideGroup(c("Crime Count 2016~2017", "Shelters"))
+  
 }
 
 function(input, output) {
 
-  #map
   
+  ### Dashboard Page
   output$map = renderLeaflet({
     category_HC = switch(input$catHC,
-                         "Total Homeless" = "totPeople", 
+                         "Total Homeless People" = "totPeople", 
                          "Total Unsheltered People" = "totUnsheltPeople",
                          "Total Sheltered People" = "totSheltPeople",
                          "Total Street Single Adult" = "totStreetSingAdult",
@@ -78,20 +82,26 @@ function(input, output) {
                          "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
                          "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople")
 
-    ###create four maps
-    #hcmapTool(hc2017_merged,"totUnsheltPeople")
     hcmapTool(hc2017_merged,category_HC)
-    #hcmapTool(hc2017_merged,"totSheltPeople")
-    #hcmapTool(hc2017_merged,"totStreetSingAdult")
-    #hcmapTool(hc2017_merged,"totStreetFamMem")
   })
+  ### Homelessness Page
+  
+  
+  ### Shelter Page
+  
+  
+  ### Crime Page
   output$map_crime = renderLeaflet({
     map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] )%>%
       leaflet()%>%
-      addTiles%>%
-      addMarkers(~LONGITUDE, ~LATITUDE)
+      addProviderTiles("CartoDB.Positron") %>%
+      addMarkers(~LONGITUDE, ~LATITUDE,
+                 clusterOptions=markerClusterOptions())
     map_crime
   })
+  
+  ### 311 Calls Page
+  # 311 Calls Page - Map
   output$map_311calls = renderLeaflet({
     pal2 <- colorNumeric(
       palette = "YlOrRd",
@@ -113,6 +123,7 @@ function(input, output) {
       addLegend(pal=pal2, values = calls311_count$count_311calls,opacity = 0.5)
     map2
   })
+  # 311 Calls Page - Chart
   output$bar_311calls = renderPlot({
     calls311_count %>%
       arrange(desc(count_311calls)) %>%
