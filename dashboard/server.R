@@ -93,6 +93,10 @@ function(input, output) {
     map_crime
   })
   output$map_311calls = renderLeaflet({
+    pal2 <- colorNumeric(
+      palette = "YlOrRd",
+      domain = calls311_merged$count_311calls
+    )
     map2=leaflet() %>%
       setView(lng=-118.2437, lat=34.0522, zoom=10)%>%
       addProviderTiles("CartoDB.Positron") %>%
