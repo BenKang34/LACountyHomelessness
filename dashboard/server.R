@@ -11,7 +11,7 @@ library(sf)
 
 ###a function that takes in a homeless count measure, 
 ###and return a color pallette based on the data
-palfun<-function(hc){
+palfunc<-function(hc){
   pal<-colorNumeric(
     palette = "YlOrRd",
     domain = hc2017_merged@data[hc]
@@ -23,7 +23,7 @@ palfun<-function(hc){
 
 hcmapTool<-function(data,hc){
   ##creat a palette for the hc variable  
-  pal=palfun(hc)
+  pal=palfunc(hc)
   leaflet() %>%
     ## Base Groups
     addProviderTiles("CartoDB.Positron", group="County Map") %>% 
@@ -63,13 +63,24 @@ hcmapTool<-function(data,hc){
 
 function(input, output) {
 
-  #data = reactive({
-  #})
-  
   #map
+  
   output$map = renderLeaflet({
+    category_HC = switch(input$catHC,
+                         "Total Homeless" = "totPeople", 
+                         "Total Unsheltered People" = "totUnsheltPeople",
+                         "Total Sheltered People" = "totSheltPeople",
+                         "Total Street Single Adult" = "totStreetSingAdult",
+                         "Total Street Family Members" = "totStreetFamMem",
+                         "Total Youth Family Households" = "totYouthFamHH",
+                         "Total Unaccompanied Kids in Shelters" = "totUnAccMinor_sheltered",
+                         "Total Single Youth in Shelters" = "totSingleYouth_sheltered",
+                         "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
+                         "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople")
+
     ###create four maps
-    hcmapTool(hc2017_merged,"totUnsheltPeople")
+    #hcmapTool(hc2017_merged,"totUnsheltPeople")
+    hcmapTool(hc2017_merged,category_HC)
     #hcmapTool(hc2017_merged,"totSheltPeople")
     #hcmapTool(hc2017_merged,"totStreetSingAdult")
     #hcmapTool(hc2017_merged,"totStreetFamMem")
