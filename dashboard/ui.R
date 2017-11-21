@@ -18,6 +18,8 @@ sidebar = dashboardSidebar(
     menuItem("Shelter", icon = icon("home"), tabName = "shelter",
              badgeLabel = "new", badgeColor = "green"),
     menuItem("Crime", icon = icon("th"), tabName = "crime",
+             badgeLabel = "new", badgeColor = "green"),
+    menuItem("311Calls", icon = icon("th"), tabName = "311calls",
              badgeLabel = "new", badgeColor = "green")
   )
 )
@@ -70,7 +72,25 @@ body = dashboardBody(
                 sliderInput("range", "Choose the time interval when the crime happened", 0, 24, value=c(4,18))
               )
             )
-    )
+    ),
+    tabItem(tabName = "311calls",
+            h2("311 calls tab content"),
+            
+            #Main Display
+            fluidRow(
+              column(width = 9,
+                     box(width = NULL, solidHeader = TRUE,
+                         leafletOutput("map_311calls", height = 500))),
+              #Right Side Display
+              column(width = 3,
+                     box(width = NULL, status = "warning",
+                         selectInput('top', 'High Frequency 311 Calls Census Tracts',
+                                     c('top five'=5,'top ten'=10,'top fifteen'=15),
+                                     selected = 5)),
+                     box(width = NULL, status = "warning",
+                         plotOutput("bar_311calls", height = 200)
+                     ))))
+    
     
 )
 )
