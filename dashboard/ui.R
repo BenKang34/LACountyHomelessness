@@ -55,9 +55,10 @@ body = dashboardBody(
                          #,actionButton("zoomButton", "Zoom to fit buses")
                      ),
                      box(width = NULL, status = "warning",
-                         selectInput("cat", "Choose category of homeless people",
-                                     choices = c("DR.NUMBER", "b", "c"),
-                                     selected = "totUnsheltPeople"))))
+                         selectInput("catHC",
+                                     label = "Choose category of homeless people",
+                                     choices = titles,
+                                     selected = "Total Homeless"))))
     ),
     tabItem(tabName = "dashboard",
             h2("Homelessness tab content")),
