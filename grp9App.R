@@ -109,7 +109,7 @@ calls311_merged<-geo_join(tracts, calls311_count, "GEOID", "GEOID")
 
 ###get the names of all homeless count measures
 vars<-colnames(hc2017_ct_subset[5:14])
-titles<-c("Total Homeless", 
+titles<-c("Total Homeless People", 
           "Total Unsheltered People", 
           "Total Sheltered People",
           "Total Street Single Adult",
