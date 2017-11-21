@@ -81,6 +81,33 @@ function(input, output) {
       addMarkers(~LONGITUDE, ~LATITUDE)
     map_crime
   })
+  output$map_311calls = renderLeaflet({
+    map2=leaflet() %>%
+      setView(lng=-118.2437, lat=34.0522, zoom=10)%>%
+      addProviderTiles("CartoDB.Positron") %>%
+      addPolygons(data = calls311_merged, 
+                  fillColor = ~pal2(count_311calls), 
+                  color = "#b2aeae", # you need to use hex colors
+                  fillOpacity = 0.7, 
+                  weight = 1, 
+                  smoothFactor = 0.2,
+                  highlightOptions=highlightOptions(color="black", 
+                                                    weight=2,
+                                                    bringToFront=TRUE),
+                  label=~as.character(count_311calls)) %>%
+      addLegend(pal=pal2, values = calls311_count$count_311calls,opacity = 0.5)
+    map2
+  })
+  output$bar_311calls = renderPlot({
+    calls311_count %>%
+      arrange(desc(count_311calls)) %>%
+      slice(1:as.numeric(input$top)) %>%
+      ggplot(aes(x=reorder(factor(CT10), count_311calls),
+                 y=count_311calls))+
+      geom_bar(stat='identity')+
+      labs(x="Census Tract Code", y="Count of 311 Calls")+
+      coord_flip()
+  })
 }
 
 
