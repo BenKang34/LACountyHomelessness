@@ -110,7 +110,20 @@ function(input, output) {
                  clusterOptions=markerClusterOptions())
     map_crime
   })
-  
+  # Crime Page - line Chart
+  output$crime_line = renderPlot({
+    crime %>%
+      mutate(hour = as.integer(TIME.OCCURRED/100))%>%
+      filter(CRIME.TYPE %in% input$crime_type)%>%
+      group_by(hour,CRIME.TYPE)%>%
+      summarise(total = n())%>%
+      ggplot(aes(x=hour,
+                 y=total,
+                 col = CRIME.TYPE))+
+      geom_line()+
+      labs(x="Crime Occurance Time", y="Count of Crimes")+
+      scale_x_continuous(breaks = seq(0,23,1))
+  })  
   ### 311 Calls Page
   # 311 Calls Page - Map
   output$map_311calls = renderLeaflet({

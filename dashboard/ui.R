@@ -77,8 +77,11 @@ body = dashboardBody(
               box(title = "Crime Type",
                   checkboxGroupInput("crime_type","Crime type to show:",
                                      c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME"),
-                                     selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))
-            )
+                                     selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))),
+            fluidRow(  
+              box(width=12,title = "Crime Occurance Over Time",
+                  plotOutput('crime_line')
+                  ))
     ),
     tabItem(tabName = "311calls",
             #h2("311 calls tab content"),
