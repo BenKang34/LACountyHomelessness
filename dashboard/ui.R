@@ -72,6 +72,12 @@ body = dashboardBody(
                 title = "Time Interval",
                 sliderInput("range", "Choose the time interval when the crime happened.", 0, 2400, value=c(400,1800))
               )
+            ),
+            fluidRow(
+              box(title = "Crime Type",
+                  checkboxGroupInput("crime_type","Crime type to show:",
+                                     c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME"),
+                                     selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))
             )
     ),
     tabItem(tabName = "311calls",

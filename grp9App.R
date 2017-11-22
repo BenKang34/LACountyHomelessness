@@ -135,6 +135,22 @@ titles<-c("Total Homeless People",
 rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset,
    lapop, dataGEOID_CT)
 
+### manipulate the crime data for the map,create a [crime type]column
+library(stringr)
+CRIME_TYPE <- function(x){
+  CRIME_TYPE <- numeric(length(x))
+  CRIME_TYPE[str_detect(x,"ASSAULT")]<-"ASSAULT"
+  CRIME_TYPE[str_detect(x,"ROBBERY")]<-"ROBBERY"
+  CRIME_TYPE[str_detect(x,"THEFT")]<-"THEFT"
+  CRIME_TYPE[str_detect(x,"RAPE") | str_detect(x,"SEX")]<-"SEXUAL_CRIME"
+  CRIME_TYPE
+}
+
+
+library(dplyr)
+crime=crime %>%
+  mutate(CRIME.TYPE=CRIME_TYPE(CRIME.CODE.DESCRIPTION))
+
 runApp("./dashboard")
 
 

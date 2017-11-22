@@ -103,7 +103,7 @@ function(input, output) {
   
   ### Crime Page
   output$map_crime = renderLeaflet({
-    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] )%>%
+    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type)%>%
       leaflet()%>%
       addProviderTiles("CartoDB.Positron") %>%
       addMarkers(~LONGITUDE, ~LATITUDE,
