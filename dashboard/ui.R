@@ -60,7 +60,10 @@ body = dashboardBody(
                                      selected = "Total Unsheltered People"))))
     ),
     tabItem(tabName = "homelessness",
-            h2("Homelessness tab content")),
+            fluidRow(
+              column(width = 9,
+                     box(width = NULL, solidHeader = TRUE,
+                         leafletOutput("map_hc", height = 500))))),
     tabItem(tabName = "shelter",
             h2("Shelter tab content")),
     tabItem(tabName = "crime",
