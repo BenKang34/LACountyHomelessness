@@ -68,6 +68,10 @@ body = dashboardBody(
             h2("Shelter tab content")),
     tabItem(tabName = "crime",
             fluidRow(
+              box(
+                textInput("ct_id", label = h3("Census Tract ID"), value = "Enter the ID of the CT that you concerned..."))
+            ),
+            fluidRow(
               box(width = 12,
                   leafletOutput("map_crime", height = 350))),
             fluidRow( 

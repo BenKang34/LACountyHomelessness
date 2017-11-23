@@ -124,14 +124,37 @@ function(input, output) {
   
   
   ### Crime Page
+  
+  # marker color
+  getColor <- function(crime) {
+    sapply(crime$VICTIM.SEX, function(gender) {
+      if(gender == "F") {
+        "pink"
+      } else if(gender == "M") {
+        "blue"
+      } else {
+        "grey"
+      } })
+  }
+  
+  icons <- awesomeIcons(
+    icon = 'ios-close',
+    iconColor = 'black',
+    library = 'ion',
+    markerColor = getColor(crime)
+  )
+  
   output$map_crime = renderLeaflet({
     map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type)%>%
       leaflet()%>%
       addProviderTiles("CartoDB.Positron") %>%
-      addMarkers(~LONGITUDE, ~LATITUDE,
-                 clusterOptions=markerClusterOptions())
+      addAwesomeMarkers(~LONGITUDE, ~LATITUDE,icon=icons,
+                        clusterOptions=markerClusterOptions(),
+                        popup = ~as.character((paste(sep = "<br/>",DATE.OCCURRED,CRIME.CODE.DESCRIPTION,"Victim Age:",VICTIM.AGE))))
+    
     map_crime
   })
+  
   # Crime Page - line Chart
   output$crime_line = renderPlot({
     crime %>%
