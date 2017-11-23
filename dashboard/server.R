@@ -11,43 +11,59 @@ library(sf)
 
 ###a function that takes in a homeless count measure, 
 ###and return a color pallette based on the data
-palfunc<-function(LAmapdata, hc){
-  pal<-colorNumeric(
-    palette = "YlOrRd",
-    domain = LAmapdata@data[hc]
-  )
+palfunc<-function(hc,color="YlOrRd"){
+  pal <- colorBin(
+    palette = "Reds",
+    domain = hc,
+    bins = 7,#bins,
+    na.color = "#808080")
+}
+
+labels_hc <- function(geolevel,hc) {
+  strTmp = as.character(hc)
+  labels <- sprintf(
+    "<strong>%s</strong><br/>%s", #/ mi<sup>2</sup>
+    geolevel, 
+    ifelse(str_detect(strTmp,"[.]"),
+           str_sub(strTmp,1,str_locate(strTmp,"[.]")[1]+2),
+           strTmp)
+    #ifelse(typeof(unlist(LAmapdata@data[hc]))=="double",
+    #       as.character(unlist(LAmapdata@data[hc])),
+    #       sprintf("%i people",unlist(LAmapdata@data[hc])))
+  ) %>% lapply(htmltools::HTML)
 }
 
 ###a function that take in a dataset and homeless count measure, and create a map
 ###including both homeless count, crime count and shelters
 
-hcmapTool<-function(LAmapdata,geolevel,hc){
+hcmapTool<-function(LAmapdata,geolevel,hc,legend_title,color="YlOrRd"){
+
   ##creat a palette for the hc variable  
-  pal=palfunc(LAmapdata,hc)
-  leaflet() %>%
+  pal<-palfunc(hc,color)
+  leaflet(LAmapdata) %>%
     ## Base Groups
     addProviderTiles("CartoDB.Positron", group="County Map") %>% 
-    addPolygons(data = LAmapdata, 
-                fillColor = ~pal(LAmapdata@data[hc]), 
+    addPolygons(fillColor = ~pal(hc),#LAmapdata@data[hc]), 
                 color = "#b2aeae", # you need to use hex colors
                 fillOpacity = 0.7, 
                 weight = 1, 
                 smoothFactor = 0.2,
-                label=~paste(unlist(LAmapdata@data[geolevel]),
-                             unlist(LAmapdata@data[ifelse(str_detect(hc,"LN"),
-                                                     substr(hc, start = 3, stop = str_length(hc)),
-                                                     hc)])),
+                label=labels_hc(geolevel,hc),
+                labelOptions = labelOptions(
+                  style = list("font-weight" = "normal", padding = "3px 8px"),
+                  textsize = "15px",
+                  direction = "auto"),
                 highlightOptions=highlightOptions(color="black", 
                                                   weight=2,
                                                   bringToFront=TRUE),
                 group="Homeless Density")%>%
     addLegend(pal = pal, 
-              values =unlist(LAmapdata@data[hc]), 
-              position = "bottomright", 
-              title = titles[match(hc, vars)] #the the index of hc, and then get the title
-              #labFormat = labelFormat(suffix = "")
-              #  group="Homeless Density Legend"
-    ) %>%
+              values = ~hc, 
+              position = "bottomright",
+              opacity = 1,
+              title = legend_title) %>%#, #the the index of hc, and then get the title
+              #labFormat = labelFormat(suffix = "") )%>%#,
+              #group="Homeless Density Legend") 
     addMarkers(data=crime, ~LONGITUDE, ~LATITUDE,
                label="crime",
                labelOptions=labelOptions(style=list("color"="red")),
@@ -77,26 +93,32 @@ function(input, output) {
                           'City' = hc2017_merged.City
                           )
     inputGeolevel = switch(input$geolevel,
-                          'CensusTract' = "tract",
-                          'Community' = "Community",
-                          'City' = "City"
+                          'CensusTract' = inputDataset$"tract",
+                          'Community' = inputDataset$"Community",
+                          'City' = inputDataset$"City"
                           )
     category_HC = switch(input$catHC,
-                         "Total Homeless People" = "totPeople", 
-                         "Total Unsheltered People" = "totUnsheltPeople",
-                         "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
-                         "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople",
-                         "Total Sheltered People" = "totSheltPeople",
-                         "Total Street Single Adult" = "totStreetSingAdult",
-                         "Total Street Family Members" = "totStreetFamMem",
-                         "Total Youth Family Households" = "totYouthFamHH",
-                         "Total Unaccompanied Kids in Shelters" = "totUnAccMinor_sheltered",
-                         "Total Single Youth in Shelters" = "totSingleYouth_sheltered")
+                         "Total Homeless People" = inputDataset$totPeople, 
+                         "Total Unsheltered People" = inputDataset$totUnsheltPeople,
+                         "Total Sheltered People(Log10 Scale)" = inputDataset$LNtotSheltPeople,
+                         "Total Unsheltered People(Log10 Scale)" = inputDataset$LNtotUnsheltPeople,
+                         "Total Sheltered People" = inputDataset$totSheltPeople,
+                         "Crime to Unsheltered People Ratio" = inputDataset$CrimeUnsheltRatio,
+                         "311 Calls to Unsheltered People Ratio" = inputDataset$CallsUnsheltRatio,
+                         "Change of Total Unsheltered People" = inputDataset$totUnsheltChanges,
+                         "Total Street Single Adult" = inputDataset$totStreetSingAdult,
+                         "Total Street Family Members" = inputDataset$totStreetFamMem,
+                         "Total Youth Family Households" = inputDataset$totYouthFamHH,
+                         "Total Unaccompanied Kids in Shelters" = inputDataset$totUnAccMinor_sheltered,
+                         "Total Single Youth in Shelters" = inputDataset$totSingleYouth_sheltered)
 
-    hcmapTool(inputDataset,inputGeolevel,category_HC)
+    hcmapTool(inputDataset,inputGeolevel,category_HC,input$catHC)
   })
   ### Homelessness Page
-  
+  output$map_hc = renderLeaflet({
+    #hcmapTool(hc2017_merged,"tract","totUnsheltCrimeRatio",color = "RdBu")
+    hcmapTool(hc2017_merged,hc2017_merged$tract,hc2017_merged$totUnsheltCrimeRatio,color = "Reds")
+  })
   
   ### Shelter Page
   
