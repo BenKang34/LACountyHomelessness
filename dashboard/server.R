@@ -168,6 +168,31 @@ function(input, output) {
       geom_line()+
       labs(x="Crime Occurance Time", y="Count of Crimes")+
       scale_x_continuous(breaks = seq(0,23,1))
+  }) 
+  
+  ###### Ben's version of crime: Just rearranged
+  output$map_crime_1 = renderLeaflet({
+    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type)%>%
+      leaflet()%>%
+      addProviderTiles("CartoDB.Positron") %>%
+      addAwesomeMarkers(~LONGITUDE, ~LATITUDE,icon=icons,
+                        #clusterOptions=markerClusterOptions(),
+                        popup = ~as.character((paste(sep = "<br/>",DATE.OCCURRED,CRIME.CODE.DESCRIPTION,"Victim Age:",VICTIM.AGE))))
+    
+    map_crime
+  })
+  output$crime_line_1 = renderPlot({
+    crime %>%
+      mutate(hour = as.integer(TIME.OCCURRED/100))%>%
+      filter(CRIME.TYPE %in% input$crime_type)%>%
+      group_by(hour,CRIME.TYPE)%>%
+      summarise(total = n())%>%
+      ggplot(aes(x=hour,
+                 y=total,
+                 col = CRIME.TYPE))+
+      geom_line()+
+      labs(x="Crime Occurance Time", y="Count of Crimes")+
+      scale_x_continuous(breaks = seq(0,23,1))
   })  
   ### 311 Calls Page
   # 311 Calls Page - Map
