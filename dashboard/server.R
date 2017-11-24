@@ -11,44 +11,53 @@ library(sf)
 
 ###a function that takes in a homeless count measure, 
 ###and return a color pallette based on the data
-palfunc<-function(hc,color="YlOrRd"){
+palfunc<-function(LAmapdata,hc,color="YlOrRd"){
   pal <- colorBin(
-    palette = "Reds",
-    domain = hc,
-    bins = 7,#bins,
-    na.color = "#808080")
+    palette = color, #"Reds"
+    domain = LAmapdata@data[,hc],
+    bins = 10,#bins,
+    na.color = "#808080")#,
+    #pretty = FALSE
 }
 
-labels_hc <- function(geolevel,hc) {
-  strTmp = as.character(hc)
-  labels <- sprintf(
-    "<strong>%s</strong><br/>%s", #/ mi<sup>2</sup>
-    geolevel, 
-    ifelse(str_detect(strTmp,"[.]"),
-           str_sub(strTmp,1,str_locate(strTmp,"[.]")[1]+2),
-           strTmp)
-    #ifelse(typeof(unlist(LAmapdata@data[hc]))=="double",
-    #       as.character(unlist(LAmapdata@data[hc])),
-    #       sprintf("%i people",unlist(LAmapdata@data[hc])))
-  ) %>% lapply(htmltools::HTML)
+labels_hc <- function(strGeo,value) {
+  if(typeof(value) == "double") {
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%.3g", #/ mi<sup>2</sup>
+      strGeo, value
+    ) %>% lapply(htmltools::HTML)
+  }
+  else if(typeof(value) == "integer") {
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%i", #/ mi<sup>2</sup>
+      strGeo, value
+    ) %>% lapply(htmltools::HTML)
+  }
+  else{
+    labels <- sprintf(
+      "<strong>%s</strong><br/>%s", #/ mi<sup>2</sup>
+      strGeo, as.character(value)
+    ) %>% lapply(htmltools::HTML)
+  }
 }
 
 ###a function that take in a dataset and homeless count measure, and create a map
 ###including both homeless count, crime count and shelters
 
-hcmapTool<-function(LAmapdata,geolevel,hc,legend_title,color="YlOrRd"){
+hcmapTool<-function(LAmapdata,geolevel,hc,color="YlOrRd"){
 
   ##creat a palette for the hc variable  
-  pal<-palfunc(hc,color)
+  pal<-palfunc(LAmapdata,hc,color)
   leaflet(LAmapdata) %>%
     ## Base Groups
     addProviderTiles("CartoDB.Positron", group="County Map") %>% 
-    addPolygons(fillColor = ~pal(hc),#LAmapdata@data[hc]), 
+    addPolygons(
+                fillColor = ~pal(LAmapdata@data[,hc]), 
                 color = "#b2aeae", # you need to use hex colors
                 fillOpacity = 0.7, 
                 weight = 1, 
                 smoothFactor = 0.2,
-                label=labels_hc(geolevel,hc),
+                label=labels_hc(LAmapdata@data[,geolevel],LAmapdata@data[,hc]),
                 labelOptions = labelOptions(
                   style = list("font-weight" = "normal", padding = "3px 8px"),
                   textsize = "15px",
@@ -58,10 +67,10 @@ hcmapTool<-function(LAmapdata,geolevel,hc,legend_title,color="YlOrRd"){
                                                   bringToFront=TRUE),
                 group="Homeless Density")%>%
     addLegend(pal = pal, 
-              values = ~hc, 
+              values = ~LAmapdata@data[,hc], 
               position = "bottomright",
               opacity = 1,
-              title = legend_title) %>%#, #the the index of hc, and then get the title
+              title = titles[match(hc, vars)]) %>%#, #the the index of hc, and then get the title
               #labFormat = labelFormat(suffix = "") )%>%#,
               #group="Homeless Density Legend") 
     addMarkers(data=crime, ~LONGITUDE, ~LATITUDE,
@@ -93,26 +102,48 @@ function(input, output) {
                           'City' = hc2017_merged.City
                           )
     inputGeolevel = switch(input$geolevel,
-                          'CensusTract' = inputDataset$"tract",
-                          'Community' = inputDataset$"Community",
-                          'City' = inputDataset$"City"
+                          'CensusTract' = "tract",
+                          'Community' = "Community",
+                          'City' = "City"
                           )
     category_HC = switch(input$catHC,
-                         "Total Homeless People" = inputDataset$totPeople, 
-                         "Total Unsheltered People" = inputDataset$totUnsheltPeople,
-                         "Total Sheltered People(Log10 Scale)" = inputDataset$LNtotSheltPeople,
-                         "Total Unsheltered People(Log10 Scale)" = inputDataset$LNtotUnsheltPeople,
-                         "Total Sheltered People" = inputDataset$totSheltPeople,
-                         "Crime to Unsheltered People Ratio" = inputDataset$CrimeUnsheltRatio,
-                         "311 Calls to Unsheltered People Ratio" = inputDataset$CallsUnsheltRatio,
-                         "Change of Total Unsheltered People" = inputDataset$totUnsheltChanges,
-                         "Total Street Single Adult" = inputDataset$totStreetSingAdult,
-                         "Total Street Family Members" = inputDataset$totStreetFamMem,
-                         "Total Youth Family Households" = inputDataset$totYouthFamHH,
-                         "Total Unaccompanied Kids in Shelters" = inputDataset$totUnAccMinor_sheltered,
-                         "Total Single Youth in Shelters" = inputDataset$totSingleYouth_sheltered)
+                         "Total Homeless People" = "totPeople", 
+                         "Total Unsheltered People" = "totUnsheltPeople",
+                         "Total Sheltered People" = "totSheltPeople",
+                         "Total Street Single Adult" = "totStreetSingAdult",
+                         "Total Street Family Members" = "totStreetFamMem",
+                         "Total Youth Family Households" = "totYouthFamHH",
+                         "Total Unaccompanied Kids in Shelters" = "totUnAccMinor_sheltered",
+                         "Total Single Youth in Shelters" = "totSingleYouth_sheltered",
+                         "Total Unsheltered People(2016)" = "totUnsheltPeople.2016",
+                         "Crime Count" = "count_crime",
+                         "311 Calls Count" = "count_311calls",
+                         "Change of Total Unsheltered People" = "totUnsheltChanges",
+                         "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
+                         "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople",
+                         "Crime to Unsheltered People Ratio" = "CrimeUnsheltRatio",
+                         "311 Calls to Unsheltered People Ratio" = "CallsUnsheltRatio"
+                         )
+    color_HC = switch(input$catHC,
+                         "Total Homeless People" = "Reds", 
+                         "Total Unsheltered People" = "Reds",
+                         "Total Sheltered People" = "Reds",
+                         "Total Street Single Adult" = "Reds",
+                         "Total Street Family Members" = "Reds",
+                         "Total Youth Family Households" = "Reds",
+                         "Total Unaccompanied Kids in Shelters" = "Reds",
+                         "Total Single Youth in Shelters" = "Reds",
+                         "Total Unsheltered People(2016)" = "Reds",
+                         "Crime Count" = "Reds",
+                         "311 Calls Count" = "Reds",
+                         "Change of Total Unsheltered People" = "RdBu",
+                         "Total Sheltered People(Log10 Scale)" = "Reds",
+                         "Total Unsheltered People(Log10 Scale)" = "Reds",
+                         "Crime to Unsheltered People Ratio" = "Reds",
+                         "311 Calls to Unsheltered People Ratio" = "Reds"
+    )
 
-    hcmapTool(inputDataset,inputGeolevel,category_HC,input$catHC)
+    hcmapTool(inputDataset,inputGeolevel,category_HC,color_HC)
   })
   ### Homelessness Page
   output$map_hc = renderLeaflet({
