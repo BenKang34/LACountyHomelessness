@@ -102,6 +102,11 @@ hc2016_ct_subset<-full_join(x=dataGEOID_CT,y=hc2016_ct_subset, by=c("tract" = "c
 crime_count <- full_join(x=crime_count, y = dataGEOID_CT, by=c("CT10" = "tract"))
 calls311_count = full_join(x = calls311_count, y = dataGEOID_CT, by = c("CT10" = "tract"))
 
+CommunityInLACitylist <- hc2017_ct_subset %>%
+  select("City", "Community_Name") %>%
+  filter(City == "Los Angeles") 
+CommunityInLACitylist <- as.factor(CommunityInLACitylist$Community_Name)
+  
 
 hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[6:17], list(Community = hc2017_ct_subset$Community_Name), sum, na.rm=T)
 hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[6:17], list(City = hc2017_ct_subset$City), sum, na.rm=T)
@@ -124,9 +129,9 @@ hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>%
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
   mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
-  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10,
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
                                     count_crime/totUnsheltPeople,NA)) %>%
-  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10,
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
                                     count_311calls/totUnsheltPeople,NA)) %>%
   mutate(TotPeopleSheltersRatio = ifelse(totPeople > 10,
                                          ifelse(count_shelter==0,
@@ -137,9 +142,9 @@ hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
   mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
-  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20,
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
                                     count_crime/totUnsheltPeople, NA)) %>%
-  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20,
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
                                     count_311calls/totUnsheltPeople, NA)) %>%
   mutate(TotPeopleSheltersRatio = ifelse(totPeople > 20,
                                          ifelse(count_shelter==0,

@@ -116,12 +116,12 @@ hcmapTool<-function(LAmapdata,geolevel,hc,color="YlOrRd"){
   
 }
 
-
 ## Shiny App Server Function
 function(input, output) {
 
   RankDataInput <- reactive({
     hc2017_ct_subset.comm %>%
+      filter(Community %in% CommunityInLACitylist) %>%
       select(Community, totUnsheltPeople, count_shelter, RankShelterLocation) %>%
       arrange(-RankShelterLocation)%>%
       slice(1:4)
