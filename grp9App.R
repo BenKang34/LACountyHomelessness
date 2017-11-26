@@ -190,7 +190,7 @@ hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
 ### and creating merged geospatial dataframe objects, 
 ### which can be used to create polygons in leaflet
 
-#library(tigris)
+library(tigris)
 #library(acs)
 
 
