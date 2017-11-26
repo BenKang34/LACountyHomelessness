@@ -76,9 +76,34 @@ hcmapTool<-function(LAmapdata,geolevel,hc,color="YlOrRd"){
     addMarkers(data=crime, ~LONGITUDE, ~LATITUDE,
                label="crime",
                labelOptions=labelOptions(style=list("color"="red")),
-               clusterOptions=markerClusterOptions(),
+               clusterOptions=markerClusterOptions(iconCreateFunction=JS("function (cluster) {    
+    var childCount = cluster.getChildCount(); 
+    var c = ' marker-crime-';  
+    if (childCount > 100) {  
+      c += 'large';  
+    } else if (childCount > 30) {  
+      c += 'medium';  
+    } else { 
+      c += 'small';  
+    }    
+    return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+                                                   
+    }")),
                group="Crime Count 2016~2017") %>%
     addMarkers(data=shelter, ~LONGITUDE, ~LATITUDE,
+               clusterOptions=markerClusterOptions(iconCreateFunction=JS("function (cluster) {    
+    var childCount = cluster.getChildCount(); 
+    var c = ' marker-shelter-';  
+    if (childCount > 50) {  
+      c += 'large';  
+    } else if (childCount > 10) {  
+      c += 'medium';  
+    } else { 
+      c += 'small';  
+    }    
+    return new L.DivIcon({ html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster' + c, iconSize: new L.Point(40, 40) });
+
+    }")),
                group="Shelters") %>%
     addLayersControl(
       #baseGroups="County Map",
@@ -91,10 +116,58 @@ hcmapTool<-function(LAmapdata,geolevel,hc,color="YlOrRd"){
   
 }
 
+
+## Shiny App Server Function
 function(input, output) {
 
+  RankDataInput <- reactive({
+    hc2017_ct_subset.comm %>%
+      select(Community, totUnsheltPeople, count_shelter, RankShelterLocation) %>%
+      arrange(-RankShelterLocation)%>%
+      slice(1:4)
+  })
   
   ### Dashboard Page
+  output$Rank1 = renderValueBox({
+    valueBox(
+      tags$p(RankDataInput()$Community[1], style = "font-size: 40%;"), 
+      tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[1]),
+                        paste("Number of Shelters:",RankDataInput()$count_shelter[1]),
+                        sep="<br/>")), style = "font-size: 80%;"),
+      width = 3, 
+      color = "navy"
+    )
+  })
+  output$Rank2 = renderValueBox({
+    valueBox(
+      tags$p(RankDataInput()$Community[2], style = "font-size: 40%;"), 
+      tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[2]),
+                        paste("Number of Shelters:",RankDataInput()$count_shelter[2]),
+                        sep="<br/>")), style = "font-size: 80%;"),
+      width = 3, 
+      color = "navy"
+    )
+  })
+  output$Rank3 = renderValueBox({
+    valueBox(
+      tags$p(RankDataInput()$Community[3], style = "font-size: 40%;"), 
+      tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[3]),
+                        paste("Number of Shelters:",RankDataInput()$count_shelter[3]),
+                        sep="<br/>")), style = "font-size: 80%;"),
+      width = 3, 
+      color = "navy"
+    )
+  })
+  output$Rank4 = renderValueBox({
+    valueBox(
+      tags$p(RankDataInput()$Community[4], style = "font-size: 40%;"), 
+      tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[4]),
+                 paste("Number of Shelters:",RankDataInput()$count_shelter[4]),
+                 sep="<br/>")), style = "font-size: 80%;"), 
+      width = 3, 
+      color = "navy"
+    )
+  })
   output$map = renderLeaflet({
     inputDataset = switch(input$geolevel,
                           'CensusTract' = hc2017_merged,
@@ -116,31 +189,37 @@ function(input, output) {
                          "Total Unaccompanied Kids in Shelters" = "totUnAccMinor_sheltered",
                          "Total Single Youth in Shelters" = "totSingleYouth_sheltered",
                          "Total Unsheltered People(2016)" = "totUnsheltPeople.2016",
-                         "Crime Count" = "count_crime",
-                         "311 Calls Count" = "count_311calls",
+                         "Crime Counts" = "count_crime",
+                         "311 Calls Counts" = "count_311calls",
+                         "Shelter Counts" = "count_shelter",
                          "Change of Total Unsheltered People" = "totUnsheltChanges",
                          "Total Sheltered People(Log10 Scale)" = "LNtotSheltPeople",
                          "Total Unsheltered People(Log10 Scale)" = "LNtotUnsheltPeople",
-                         "Crime to Unsheltered People Ratio" = "CrimeUnsheltRatio",
-                         "311 Calls to Unsheltered People Ratio" = "CallsUnsheltRatio"
+                         "Crimes to Unsheltered People Ratio" = "CrimeUnsheltRatio",
+                         "311 Calls to Unsheltered People Ratio" = "CallsUnsheltRatio",
+                         "Total Homeless People to Shelters Ratio" = "TotPeopleSheltersRatio",
+                         "Shelters to be located" = "RankShelterLocation"
                          )
     color_HC = switch(input$catHC,
-                         "Total Homeless People" = "Reds", 
-                         "Total Unsheltered People" = "Reds",
-                         "Total Sheltered People" = "Reds",
-                         "Total Street Single Adult" = "Reds",
-                         "Total Street Family Members" = "Reds",
-                         "Total Youth Family Households" = "Reds",
-                         "Total Unaccompanied Kids in Shelters" = "Reds",
-                         "Total Single Youth in Shelters" = "Reds",
-                         "Total Unsheltered People(2016)" = "Reds",
-                         "Crime Count" = "Reds",
-                         "311 Calls Count" = "Reds",
-                         "Change of Total Unsheltered People" = "RdBu",
-                         "Total Sheltered People(Log10 Scale)" = "Reds",
-                         "Total Unsheltered People(Log10 Scale)" = "Reds",
-                         "Crime to Unsheltered People Ratio" = "Reds",
-                         "311 Calls to Unsheltered People Ratio" = "Reds"
+                         "Total Homeless People" = "Blues", 
+                         "Total Unsheltered People" = "Blues",
+                         "Total Sheltered People" = "Blues",
+                         "Total Street Single Adult" = "Blues",
+                         "Total Street Family Members" = "Blues",
+                         "Total Youth Family Households" = "Blues",
+                         "Total Unaccompanied Kids in Shelters" = "Blues",
+                         "Total Single Youth in Shelters" = "Blues",
+                         "Total Unsheltered People(2016)" = "Blues",
+                         "Crime Counts" = "Blues",
+                         "311 Calls Counts" = "Blues",
+                         "Shelter Counts" = "Blues",
+                         "Change of Total Unsheltered People" = "Blues",
+                         "Total Sheltered People(Log10 Scale)" = "Blues",
+                         "Total Unsheltered People(Log10 Scale)" = "Blues",
+                         "Crimes to Unsheltered People Ratio" = "Blues",
+                         "311 Calls to Unsheltered People Ratio" = "Blues",
+                         "Total Homeless People to Shelters Ratio" = "Blues",
+                         "Shelters to be located" = "Blues"
     )
 
     hcmapTool(inputDataset,inputGeolevel,category_HC,color_HC)
@@ -148,7 +227,7 @@ function(input, output) {
   ### Homelessness Page
   output$map_hc = renderLeaflet({
     #hcmapTool(hc2017_merged,"tract","totUnsheltCrimeRatio",color = "RdBu")
-    hcmapTool(hc2017_merged,hc2017_merged$tract,hc2017_merged$totUnsheltCrimeRatio,color = "Reds")
+    hcmapTool(hc2017_merged,"tract","totUnsheltCrimeRatio",color = "Reds")
   })
   
   ### Shelter Page

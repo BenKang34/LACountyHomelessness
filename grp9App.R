@@ -69,8 +69,9 @@ colnames(hc2017_ct_subset)[6] <- "totUnsheltPeople"
 colnames(hc2017_ct_subset)[13] <- "totUnsheltPeople.2016"
 
 
-###Step 3: get the count of crime in 2016-2017
-###        and count of 311 call in 2017 by tract
+###Step 3: Get counts of 
+###        1. crime in 2016-2017  2. 311 call in 2017  3. Shelters
+###        by tract
 crime_count<-crime%>%
   group_by(CT10) %>%
   summarize(count_crime=n())
@@ -79,11 +80,18 @@ calls311_count<-calls311 %>%
   group_by(CT10) %>%
   summarize(count_311calls=n())
 
+shelter_count<-shelter%>%
+  group_by(CT10) %>%
+  summarize(count_shelter=n())
+
 hc2017_ct_subset <- left_join(x = hc2017_ct_subset,
                               y = crime_count[c(1,2)],
                               by=c("tract"="CT10"))
 hc2017_ct_subset <- left_join(x = hc2017_ct_subset,
                               y = calls311_count[c(1,2)],
+                              by=c("tract"="CT10"))
+hc2017_ct_subset <- left_join(x = hc2017_ct_subset,
+                              y = shelter_count[c(1,2)],
                               by=c("tract"="CT10"))
 
 dataGEOID_CT = data.frame(GEOID = lapop$GEOID, tract = lapop$ct)
@@ -95,43 +103,84 @@ crime_count <- full_join(x=crime_count, y = dataGEOID_CT, by=c("CT10" = "tract")
 calls311_count = full_join(x = calls311_count, y = dataGEOID_CT, by = c("CT10" = "tract"))
 
 
-hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[6:16], list(Community = hc2017_ct_subset$Community_Name), sum, na.rm=T)
-hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[6:16], list(City = hc2017_ct_subset$City), sum, na.rm=T)
+hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[6:17], list(Community = hc2017_ct_subset$Community_Name), sum, na.rm=T)
+hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[6:17], list(City = hc2017_ct_subset$City), sum, na.rm=T)
 
 ## Create Measures
 hc2017_ct_subset <- hc2017_ct_subset %>% 
-  mutate(totUnsheltChanges = (totUnsheltPeople - totUnsheltPeople.2016)) %>% 
-  mutate(LNtotSheltPeople = ifelse(is.na(totSheltPeople) | totSheltPeople == 0,
-                                   0,log10(totSheltPeople))) %>%
-  mutate(LNtotUnsheltPeople = ifelse(is.na(totUnsheltPeople) | totUnsheltPeople == 0,
-                                     0,log10(totUnsheltPeople))) %>%
-  mutate(CrimeUnsheltRatio = ifelse(is.na(count_crime) | is.na(totUnsheltPeople) | totUnsheltPeople==0,
-                                    NA,count_crime/totUnsheltPeople)) %>%
-  mutate(CallsUnsheltRatio = ifelse(is.na(count_311calls) | is.na(totUnsheltPeople) | totUnsheltPeople==0,
-                                    NA,count_311calls/totUnsheltPeople))
+  mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
+  mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
+  mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople==0,
+                                    count_crime/totUnsheltPeople,NA)) %>%
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople==0,
+                                    count_311calls/totUnsheltPeople,NA)) %>%
+  mutate(TotPeopleSheltersRatio = ifelse(count_shelter==0,
+                                         totPeople,
+                                         totPeople/count_shelter))
+
 
 hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>% 
-  mutate(totUnsheltChanges = (totUnsheltPeople - totUnsheltPeople.2016)) %>% 
-  mutate(LNtotSheltPeople = ifelse(is.na(totSheltPeople) | totSheltPeople == 0,
-                                   0,log10(totSheltPeople))) %>%
-  mutate(LNtotUnsheltPeople = ifelse(is.na(totUnsheltPeople) | totUnsheltPeople == 0,
-                                     0,log10(totUnsheltPeople))) %>%
-  mutate(CrimeUnsheltRatio = ifelse(is.na(count_crime) | is.na(totUnsheltPeople) | totUnsheltPeople < 5,
-                                    NA,count_crime/totUnsheltPeople)) %>%
-  mutate(CallsUnsheltRatio = ifelse(is.na(count_311calls) | is.na(totUnsheltPeople) | totUnsheltPeople < 5,
-                                    NA,count_311calls/totUnsheltPeople))
+  mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
+  mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
+  mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10,
+                                    count_crime/totUnsheltPeople,NA)) %>%
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10,
+                                    count_311calls/totUnsheltPeople,NA)) %>%
+  mutate(TotPeopleSheltersRatio = ifelse(totPeople > 10,
+                                         ifelse(count_shelter==0,
+                                                totPeople,
+                                                totPeople/count_shelter),NA))
 
 hc2017_ct_subset.city <- hc2017_ct_subset.city %>% 
-  mutate(totUnsheltChanges = (totUnsheltPeople - totUnsheltPeople.2016)) %>% 
-  mutate(LNtotSheltPeople = ifelse(is.na(totSheltPeople) | totSheltPeople == 0,
-                                   0,log10(totSheltPeople))) %>%
-  mutate(LNtotUnsheltPeople = ifelse(is.na(totUnsheltPeople) | totUnsheltPeople == 0,
-                                     0,log10(totUnsheltPeople))) %>%
-  mutate(CrimeUnsheltRatio = ifelse(is.na(count_crime) | is.na(totUnsheltPeople) | totUnsheltPeople < 5,
-                                       NA,count_crime/totUnsheltPeople)) %>%
-  mutate(CallsUnsheltRatio = ifelse(is.na(count_311calls) | is.na(totUnsheltPeople) | totUnsheltPeople < 5,
-                                          NA,count_311calls/totUnsheltPeople))
+  mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
+  mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
+  mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20,
+                                    count_crime/totUnsheltPeople, NA)) %>%
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20,
+                                    count_311calls/totUnsheltPeople, NA)) %>%
+  mutate(TotPeopleSheltersRatio = ifelse(totPeople > 20,
+                                         ifelse(count_shelter==0,
+                                                totPeople,
+                                                totPeople/count_shelter),NA))
 
+## Get Rankings of potential locations for shelters
+## Measures that are considered to rank the geographics
+## 1. Crime/UnsheltPeople 0.5
+## 2. 311calls/UnsheltPeople 0.3
+## 3. Shelters/TotalPeople 0.2
+w1 = 0.1
+w2 = 0.2
+w3 = 0.7
+
+maxCrimeToUnsheltpeople <- max(hc2017_ct_subset$CrimeUnsheltRatio, na.rm = T)
+maxCallsToUnshltpeople <- max(hc2017_ct_subset$CallsUnsheltRatio, na.rm = T)
+maxSheltersToTotalpeople <- max(hc2017_ct_subset$TotPeopleSheltersRatio, na.rm = T)
+  
+hc2017_ct_subset <- hc2017_ct_subset %>%
+  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
+           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
+           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
+
+maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.comm$CrimeUnsheltRatio, na.rm = T)
+maxCallsToUnshltpeople <- max(hc2017_ct_subset.comm$CallsUnsheltRatio, na.rm = T)
+maxSheltersToTotalpeople <- max(hc2017_ct_subset.comm$TotPeopleSheltersRatio, na.rm = T)
+
+hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>%
+  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
+           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
+           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
+
+maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.city$CrimeUnsheltRatio, na.rm = T)
+maxCallsToUnshltpeople <- max(hc2017_ct_subset.city$CallsUnsheltRatio, na.rm = T)
+maxSheltersToTotalpeople <- max(hc2017_ct_subset.city$TotPeopleSheltersRatio, na.rm = T)
+
+hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
+  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
+           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
+           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
 
 
 ###Remove the datasets that are not needed to save memory
@@ -141,12 +190,13 @@ hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
 ### and creating merged geospatial dataframe objects, 
 ### which can be used to create polygons in leaflet
 
-library(tigris)
-library(acs)
+#library(tigris)
+#library(acs)
 
 
 # use county names in the tigris package but to grab the spatial data (tigris)
-tracts<-tracts(state="CA", county="Los Angeles", cb = TRUE)
+#tracts<-tracts(state="CA", county="Los Angeles", cb = TRUE)
+tracts<-readRDS("data/LASpatialData.rda")
 ## Merge the hc, crime, 311 data with tracts geo data,
 ## and create a Spatial Polygons Data frame
 hc2017_merged<-geo_join(tracts, hc2017_ct_subset, "GEOID", "GEOID")
@@ -169,7 +219,7 @@ object.size(hc2017_merged)
 #hc2017_merged <- rmapshaper::ms_simplify(hc2017_merged)
 object.size(hc2017_merged)
 ###get the names of all homeless count measures
-vars<-colnames(hc2017_ct_subset[6:21])
+vars<-colnames(hc2017_ct_subset[6:24])
 titles<-c("Total Homeless People", 
           "Total Unsheltered People", 
           "Total Sheltered People",
@@ -179,20 +229,22 @@ titles<-c("Total Homeless People",
           "Total Unaccompanied Kids in Shelters",
           "Total Single Youth in Shelters",
           "Total Unsheltered People(2016)",
-          "Crime Count",
-          "311 Calls Count",
+          "Crime Counts",
+          "311 Calls Counts",
+          "Shelter Counts",
           "Change of Total Unsheltered People",
           "Total Sheltered People(Log10 Scale)",
           "Total Unsheltered People(Log10 Scale)",
-          "Crime to Unsheltered People Ratio",
-          "311 Calls to Unsheltered People Ratio")
+          "Crimes to Unsheltered People Ratio",
+          "311 Calls to Unsheltered People Ratio",
+          "Total Homeless People to Shelters Ratio",
+          "Shelters to be located")
 
 ###remove the datasets that are not needed to save memory
 #rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset,
 #   lapop, dataGEOID_CT)
 
 ### manipulate the crime data for the map,create a [crime type]column
-library(stringr)
 CRIME_TYPE <- function(x){
   CRIME_TYPE <- numeric(length(x))
   CRIME_TYPE[str_detect(x,"ASSAULT")]<-"ASSAULT"
@@ -202,8 +254,6 @@ CRIME_TYPE <- function(x){
   CRIME_TYPE
 }
 
-
-library(dplyr)
 crime=crime %>%
   mutate(CRIME.TYPE=CRIME_TYPE(CRIME.CODE.DESCRIPTION))
 
