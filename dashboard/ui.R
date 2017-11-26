@@ -7,19 +7,26 @@ library(leaflet)
 #
 
 header = dashboardHeader(
-  disable = TRUE,
-  title = "City of Los Angeles",
-  titleWidth = 180
+  #disable = FALSE,
+  title = tags$a(href='https://www.lacity.org',
+                 tags$img(src='logo.png', width = "180px", height = "50px")),
+  titleWidth = 200
+                 #"City of Los Angeles")
+  #title = "City of Los Angeles"#,
+ 
 )
 
+#header$children[[2]]$children = tags$a(href='https://www.lacity.org',
+#                                       tags$img(src='logo.png',title = "City of Los Angeles",height='40',width='40'))
+
 sidebar = dashboardSidebar(
-  width = 180,
-  sidebarUserPanel(name = tags$p("City of Los Angeles", style = "font-size: 80%;"),#tags$a(href='https://www.lacity.org',
-                                  #tags$img(src='logo.png'))#,"City of Los Angeles",
-                   #subtitle = a(href = "https://www.lacity.org", icon("circle", class = "text-success"), "Online"),
-                   # Image file should be in www/ subdir
-                   image = "logo.png"
-  ),
+  width = 200,
+  #sidebarUserPanel(name = tags$p("City of Los Angeles", style = "font-size: 80%;"),#tags$a(href='https://www.lacity.org',
+  #                                #tags$img(src='logo.png'))#,"City of Los Angeles",
+  #                 #subtitle = a(href = "https://www.lacity.org", icon("circle", class = "text-success"), "Online"),
+  #                 # Image file should be in www/ subdir
+  #                 image = "logo.png"
+  #),
   sidebarMenu(
     #title = tags$a(href='https://www.lacity.org',
     #               tags$img(src='logo.png')),
@@ -34,31 +41,77 @@ sidebar = dashboardSidebar(
 )
 
 body = dashboardBody(
-  tags$head(tags$style(HTML('
-      .main-header .logo {
-                            font-family: "Georgia", Times, "Times New Roman", serif;
-                            font-weight: bold;
-                            font-size: 14px;
-      }
-                            '))),
-  tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
+  #tags$head(
+  #  tags$link(rel = "stylesheet", type = "text/css", href = "css/custom.css"),
+  #  tags$script(src = "custom.js")
+  #),
+  tags$style(type = "text/css", "#map {height: calc(80vh - 80px) !important;}"),
   tags$style(type = "text/css", "#map_crime_1 {height: calc(55vh - 70px) !important;}"),
   tags$style(type = "text/css", "#crime_line_1 {height: calc(45vh - 70px) !important;}"),
   tags$style(type = "text/css", "#map_311calls {height: calc(100vh - 80px) !important;}"),
+  tags$style(type = 'text/css', ".selectize-input { font-size: 14px; line-height: 14px;} .selectize-dropdown { font-size: 10px; line-height: 12px; }"),
   # Decide the number of Rows first, 
   # and then include the columns inside the Row(fluidRow)
   tabItems(
     tabItem(tabName = "dashboard",
-            #h2("Dashboard tab content"),
+            fluidRow(
+              #red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black.
+              valueBoxOutput("Rank1", width = 3),
+              valueBoxOutput("Rank2", width = 3),
+              valueBoxOutput("Rank3", width = 3),
+              valueBoxOutput("Rank4", width = 3)
+            ),
             
             #Main Display
             fluidRow(
               column(width = 9,
                      box(width = NULL, solidHeader = TRUE,
+                         tags$head(tags$style(HTML("
+                                                   .marker-crime-small {
+                                                   background-color: rgba(254,232,200, 0.5);
+                                                   }
+                                                   .marker-crime-small div {
+                                                   background-color: rgba(253,187,132, 0.8);
+                                                   }
+                                                   
+                                                   .marker-crime-medium {
+                                                   background-color: rgba(253,187,132, 0.5);
+                                                   }
+                                                   .marker-crime-medium div {
+                                                   background-color: rgba(239,101,72, 0.8);
+                                                   }
+                                                   
+                                                   .marker-crime-large {
+                                                   background-color: rgba(239,101,72, 0.5);
+                                                   }
+                                                   .marker-crime-large div {
+                                                   background-color: rgba(179,0,0, 0.8);
+                                                   }"))),
+                         tags$head(tags$style(HTML("
+                                                   .marker-shelter-small {
+                                                   background-color: rgba(229,245,224, 0.5);
+                                                   }
+                                                   .marker-shelter-small div {
+                                                   background-color: rgba(161,217,155, 0.8);
+                                                   }
+                                                   
+                                                   .marker-shelter-medium {
+                                                   background-color: rgba(161,217,155, 0.5);
+                                                   }
+                                                   .marker-shelter-medium div {
+                                                   background-color: rgba(65,171,93, 0.8);
+                                                   }
+                                                   
+                                                   .marker-shelter-large {
+                                                   background-color: rgba(65,171,93, 0.5);
+                                                   }
+                                                   .marker-shelter-large div {
+                                                   background-color: rgba(0,109,44, 0.8);
+                                                   }"))),
                          leafletOutput("map", height = 500))),
             #Right Side Display
               column(width = 3,
-                     box(width = NULL, status = "warning",
+                     box(width = NULL, status = "primary",
                          uiOutput("geoSelect"),
                          selectInput("geolevel", 
                                      "Choose the geographical level:",
@@ -67,7 +120,7 @@ body = dashboardBody(
                                        'Community' = 'Community',
                                        'Census Tract' = 'CensusTract'
                                      ),
-                                     selected = 'City'
+                                     selected = 'Community'
                          )#,
                          #p(
                         #   class = "text-muted",
@@ -75,11 +128,11 @@ body = dashboardBody(
                         # )
                          #,actionButton("zoomButton", "Zoom to fit buses")
                      ),
-                     box(width = NULL, status = "warning",
+                     box(width = NULL, status = "primary",
                          selectInput("catHC",
-                                     label = "Choose the category of homeless people",
+                                     label = "Choose the category of homeless measures:",
                                      choices = titles,
-                                     selected = "Total Unsheltered People"))))
+                                     selected = "Shelters to be located"))))
     ),
     tabItem(tabName = "homelessness",
             fluidRow(
