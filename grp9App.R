@@ -10,12 +10,12 @@ library(stringr)
 
 ### Step 1: Read in the data files
 
-crime<-read.csv("data/crime_w_CTs20171102134814.csv")
-calls311<-read.csv("data/311_calls_w_CTs20171102134828.csv")
-hc2016<-read.csv("data/HC2016_Total_Counts_by_Census_Tract_LA_CoC_07132016.csv")
-hc2017_ct<-read.csv("data/homeless-count-2017-results-by-census-tract.csv") #, fileEncoding = "UTF-8")
-hc2017_com<-read.csv("data/homeless-count-2017-results-by-census-tract_by_community.csv")
-shelter<-read.csv("data/shelters_w_CTs20171102134808.csv")
+crime<-read.csv("data/crime_w_CTs20171102134814.csv", fileEncoding="UTF-8-BOM")
+calls311<-read.csv("data/311_calls_w_CTs20171102134828.csv", fileEncoding="UTF-8-BOM")
+hc2016<-read.csv("data/HC2016_Total_Counts_by_Census_Tract_LA_CoC_07132016.csv", fileEncoding="UTF-8-BOM")
+hc2017_ct<-read.csv("data/homeless-count-2017-results-by-census-tract.csv", fileEncoding="UTF-8-BOM") #, fileEncoding = "UTF-8")
+hc2017_com<-read.csv("data/homeless-count-2017-results-by-census-tract_by_community.csv", fileEncoding="UTF-8-BOM")
+shelter<-read.csv("data/shelters_w_CTs20171102134808.csv", fileEncoding="UTF-8-BOM")
 ###the following la census geo data file was obtained through
 ###tidycensus package with an API key
 lapop<-readRDS("data/lapop.rds")
