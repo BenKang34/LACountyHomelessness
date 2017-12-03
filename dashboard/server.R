@@ -133,7 +133,7 @@ function(input, output) {
       tags$p(RankDataInput()$Community[1], style = "font-size: 40%;"), 
       tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[1]),
                         paste("Number of Shelters:",RankDataInput()$count_shelter[1]),
-                        sep="<br/>")), style = "font-size: 80%;"),
+                        sep="<br/>")), style = "font-size: 100%;"),
       width = 3, 
       color = "navy"
     )
@@ -143,7 +143,7 @@ function(input, output) {
       tags$p(RankDataInput()$Community[2], style = "font-size: 40%;"), 
       tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[2]),
                         paste("Number of Shelters:",RankDataInput()$count_shelter[2]),
-                        sep="<br/>")), style = "font-size: 80%;"),
+                        sep="<br/>")), style = "font-size: 100%;"),
       width = 3, 
       color = "navy"
     )
@@ -153,7 +153,7 @@ function(input, output) {
       tags$p(RankDataInput()$Community[3], style = "font-size: 40%;"), 
       tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[3]),
                         paste("Number of Shelters:",RankDataInput()$count_shelter[3]),
-                        sep="<br/>")), style = "font-size: 80%;"),
+                        sep="<br/>")), style = "font-size: 100%;"),
       width = 3, 
       color = "navy"
     )
@@ -163,7 +163,7 @@ function(input, output) {
       tags$p(RankDataInput()$Community[4], style = "font-size: 40%;"), 
       tags$p(HTML(paste(paste("Unsheltered People:",RankDataInput()$totUnsheltPeople[4]),
                  paste("Number of Shelters:",RankDataInput()$count_shelter[4]),
-                 sep="<br/>")), style = "font-size: 80%;"), 
+                 sep="<br/>")), style = "font-size: 100%;"), 
       width = 3, 
       color = "navy"
     )
@@ -213,7 +213,7 @@ function(input, output) {
                          "Crime Counts" = "Blues",
                          "311 Calls Counts" = "Blues",
                          "Shelter Counts" = "Blues",
-                         "Change of Total Unsheltered People" = "Blues",
+                         "Change of Total Unsheltered People" = "RdBu",
                          "Total Sheltered People(Log10 Scale)" = "Blues",
                          "Total Unsheltered People(Log10 Scale)" = "Blues",
                          "Crimes to Unsheltered People Ratio" = "Blues",

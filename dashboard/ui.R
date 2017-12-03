@@ -7,10 +7,11 @@ library(leaflet)
 #
 
 header = dashboardHeader(
-  #disable = FALSE,
-  title = tags$a(href='https://www.lacity.org',
-                 tags$img(src='logo.png', width = "180px", height = "50px")),
-  titleWidth = 200
+  title = "City of Los Angeles",
+  disable = TRUE#,
+  #title = tags$a(href='https://www.lacity.org',
+  #               tags$img(src='logo.png', width = "180px", height = "50px")),
+  #titleWidth = 200
                  #"City of Los Angeles")
   #title = "City of Los Angeles"#,
  
@@ -50,89 +51,119 @@ body = dashboardBody(
   tags$style(type = "text/css", "#crime_line_1 {height: calc(45vh - 70px) !important;}"),
   tags$style(type = "text/css", "#map_311calls {height: calc(100vh - 80px) !important;}"),
   tags$style(type = 'text/css', ".selectize-input { font-size: 14px; line-height: 14px;} .selectize-dropdown { font-size: 10px; line-height: 12px; }"),
+  tags$style(type = 'text/css', "table {
+    border-spacing:0px; 
+  }"),
+  #tags$style(type = 'text/css', "table { border-collapse: collapse;}"),
   # Decide the number of Rows first, 
   # and then include the columns inside the Row(fluidRow)
   tabItems(
     tabItem(tabName = "dashboard",
             fluidRow(
-              #red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black.
-              valueBoxOutput("Rank1", width = 3),
-              valueBoxOutput("Rank2", width = 3),
-              valueBoxOutput("Rank3", width = 3),
-              valueBoxOutput("Rank4", width = 3)
-            ),
-            
-            #Main Display
-            fluidRow(
-              column(width = 9,
-                     box(width = NULL, solidHeader = TRUE,
-                         tags$head(tags$style(HTML("
-                                                   .marker-crime-small {
-                                                   background-color: rgba(254,232,200, 0.5);
-                                                   }
-                                                   .marker-crime-small div {
-                                                   background-color: rgba(253,187,132, 0.8);
-                                                   }
-                                                   
-                                                   .marker-crime-medium {
-                                                   background-color: rgba(253,187,132, 0.5);
-                                                   }
-                                                   .marker-crime-medium div {
-                                                   background-color: rgba(239,101,72, 0.8);
-                                                   }
-                                                   
-                                                   .marker-crime-large {
-                                                   background-color: rgba(239,101,72, 0.5);
-                                                   }
-                                                   .marker-crime-large div {
-                                                   background-color: rgba(179,0,0, 0.8);
-                                                   }"))),
-                         tags$head(tags$style(HTML("
-                                                   .marker-shelter-small {
-                                                   background-color: rgba(229,245,224, 0.5);
-                                                   }
-                                                   .marker-shelter-small div {
-                                                   background-color: rgba(161,217,155, 0.8);
-                                                   }
-                                                   
-                                                   .marker-shelter-medium {
-                                                   background-color: rgba(161,217,155, 0.5);
-                                                   }
-                                                   .marker-shelter-medium div {
-                                                   background-color: rgba(65,171,93, 0.8);
-                                                   }
-                                                   
-                                                   .marker-shelter-large {
-                                                   background-color: rgba(65,171,93, 0.5);
-                                                   }
-                                                   .marker-shelter-large div {
-                                                   background-color: rgba(0,109,44, 0.8);
-                                                   }"))),
-                         leafletOutput("map", height = 500))),
-            #Right Side Display
-              column(width = 3,
-                     box(width = NULL, status = "primary",
-                         uiOutput("geoSelect"),
-                         selectInput("geolevel", 
-                                     "Choose the geographical level:",
-                                     choices = c(
-                                       'City' = 'City',
-                                       'Community' = 'Community',
-                                       'Census Tract' = 'CensusTract'
-                                     ),
-                                     selected = 'Community'
-                         )#,
-                         #p(
-                        #   class = "text-muted",
-                        #   paste("some random text for geo level")
-                        # )
-                         #,actionButton("zoomButton", "Zoom to fit buses")
+              column(12,offset=0,
+                     div(style = "font-size: 10px; padding: 14px 0px; margin-top:-3em",
+                         tags$table(class = "table", style = "padding:0px;", tags$style(HTML("width:100%")),
+                                    tags$tbody(tags$tr(tags$td(h4("Shelters Recommended"), style = "vertical-align:bottom", align = "left", width = "10000", tags$style(HTML("height:1000px"))),
+                                                       tags$td(tags$a(href='https://www.lacity.org',
+                                                                      tags$img(src='logo_b.png', width = "180px")),#, height = "50px")),
+                                                               style = "border-collapse: collapse", align = "right", width = "10000", tags$style(HTML("height:1000px")))
+                                                       )))
+                         ),
+                     div(style = "font-size: 10px; padding: 0px 0px; margin-top:-4.3em", 
+                          fluidRow(
+                            #red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black.
+                            valueBoxOutput("Rank1", width = 3),
+                            valueBoxOutput("Rank2", width = 3),
+                            valueBoxOutput("Rank3", width = 3),
+                            valueBoxOutput("Rank4", width = 3)
+                            #column(width = 12,
+                            #       box(title = "Shelters Recommended", width = NULL, solidHeader = TRUE,
+                                       
+                            #           )
+                            #)
+                          )
+                         ),
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-3em",
+                         tags$table(class = "table", style = "padding:0px;", tags$style(HTML("width:100%")),
+                                    tags$tbody(tags$tr(tags$td(h4("Homeless People Measures"), style = "border-collapse: collapse", align = "left", width = "10000", tags$style(HTML("height:1000px")))
+                                    )))
                      ),
-                     box(width = NULL, status = "primary",
-                         selectInput("catHC",
-                                     label = "Choose the category of homeless measures:",
-                                     choices = titles,
-                                     selected = "Shelters to be located"))))
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-5em",
+                          
+                          #Main Display
+                          fluidRow(
+                            column(width = 9,
+                                   box(width = NULL, solidHeader = TRUE,
+                                       tags$head(tags$style(HTML("
+                                                                 .marker-crime-small {
+                                                                 background-color: rgba(254,232,200, 0.5);
+                                                                 }
+                                                                 .marker-crime-small div {
+                                                                 background-color: rgba(253,187,132, 0.8);
+                                                                 }
+                                                                 
+                                                                 .marker-crime-medium {
+                                                                 background-color: rgba(253,187,132, 0.5);
+                                                                 }
+                                                                 .marker-crime-medium div {
+                                                                 background-color: rgba(239,101,72, 0.8);
+                                                                 }
+                                                                 
+                                                                 .marker-crime-large {
+                                                                 background-color: rgba(239,101,72, 0.5);
+                                                                 }
+                                                                 .marker-crime-large div {
+                                                                 background-color: rgba(179,0,0, 0.8);
+                                                                 }"))),
+                                       tags$head(tags$style(HTML("
+                                                                 .marker-shelter-small {
+                                                                 background-color: rgba(229,245,224, 0.5);
+                                                                 }
+                                                                 .marker-shelter-small div {
+                                                                 background-color: rgba(161,217,155, 0.8);
+                                                                 }
+                                                                 
+                                                                 .marker-shelter-medium {
+                                                                 background-color: rgba(161,217,155, 0.5);
+                                                                 }
+                                                                 .marker-shelter-medium div {
+                                                                 background-color: rgba(65,171,93, 0.8);
+                                                                 }
+                                                                 
+                                                                 .marker-shelter-large {
+                                                                 background-color: rgba(65,171,93, 0.5);
+                                                                 }
+                                                                 .marker-shelter-large div {
+                                                                 background-color: rgba(0,109,44, 0.8);
+                                                                 }"))),
+                                       leafletOutput("map", height = 400))),
+                          #Right Side Display
+                            column(width = 3,
+                                   box(width = NULL, status = "primary",
+                                       uiOutput("geoSelect"),
+                                       selectInput("geolevel", 
+                                                   "Choose the geographical level:",
+                                                   choices = c(
+                                                     'City' = 'City',
+                                                     'Community' = 'Community',
+                                                     'Census Tract' = 'CensusTract'
+                                                   ),
+                                                   selected = 'Community'
+                                       )#,
+                                       #p(
+                                      #   class = "text-muted",
+                                      #   paste("some random text for geo level")
+                                      # )
+                                       #,actionButton("zoomButton", "Zoom to fit buses")
+                                   ),
+                                   box(width = NULL, status = "primary",
+                                       selectInput("catHC",
+                                                   label = "Choose the category of homeless measures:",
+                                                   choices = titles,
+                                                   selected = "Shelters to be located"))))
+                     )
+              )
+            )
     ),
     tabItem(tabName = "homelessness",
             fluidRow(
