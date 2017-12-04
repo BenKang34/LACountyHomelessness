@@ -248,41 +248,18 @@ function(input, output) {
   }
   
   icons <- awesomeIcons(
-    icon = 'ios-close',
+    icon = ifelse(getColor(crime) == "pink", 
+                  'female', 
+                  ifelse(getColor(crime) == 'blue', 'male', 'genderless')),#'ios-close',
     iconColor = 'black',
     library = 'ion',
     markerColor = getColor(crime)
   )
   
+  
   output$map_crime = renderLeaflet({
-    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type)%>%
-      leaflet()%>%
-      addProviderTiles("CartoDB.Positron") %>%
-      addAwesomeMarkers(~LONGITUDE, ~LATITUDE,icon=icons,
-                        clusterOptions=markerClusterOptions(),
-                        popup = ~as.character((paste(sep = "<br/>",DATE.OCCURRED,CRIME.CODE.DESCRIPTION,"Victim Age:",VICTIM.AGE))))
-    
-    map_crime
-  })
-  
-  # Crime Page - line Chart
-  output$crime_line = renderPlot({
-    crime %>%
-      mutate(hour = as.integer(TIME.OCCURRED/100))%>%
-      filter(CRIME.TYPE %in% input$crime_type)%>%
-      group_by(hour,CRIME.TYPE)%>%
-      summarise(total = n())%>%
-      ggplot(aes(x=hour,
-                 y=total,
-                 col = CRIME.TYPE))+
-      geom_line()+
-      labs(x="Crime Occurance Time", y="Count of Crimes")+
-      scale_x_continuous(breaks = seq(0,23,1))
-  }) 
-  
-  ###### Ben's version of crime: Just rearranged
-  output$map_crime_1 = renderLeaflet({
-    map_crime= filter(crime,TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type)%>%
+    map_crime <- crime %>%
+      filter(TIME.OCCURRED>=input$range[1] &TIME.OCCURRED<=input$range[2] & CRIME.TYPE %in% input$crime_type) %>%
       leaflet()%>%
       addProviderTiles("CartoDB.Positron") %>%
       addAwesomeMarkers(~LONGITUDE, ~LATITUDE,icon=icons,
@@ -291,24 +268,26 @@ function(input, output) {
     
     map_crime
   })
-  output$crime_line_1 = renderPlot({
+  
+  output$crime_line = renderPlot({
     crime %>%
       mutate(hour = as.integer(TIME.OCCURRED/100))%>%
       filter(CRIME.TYPE %in% input$crime_type)%>%
       group_by(hour,CRIME.TYPE)%>%
-      summarise(total = n())%>%
+      summarise(total = n()) %>%
       ggplot(aes(x=hour,
                  y=total,
                  col = CRIME.TYPE))+
       geom_line()+
-      labs(x="Crime Occurance Time", y="Count of Crimes")+
-      scale_x_continuous(breaks = seq(0,23,1))
+      labs(x="Crime Occurance Time (Hour)", y="Count of Crimes")+
+      scale_x_continuous(breaks = seq(0,23,1))+
+      theme(legend.position = "bottom")
   })  
   ### 311 Calls Page
   # 311 Calls Page - Map
   output$map_311calls = renderLeaflet({
     pal2 <- colorNumeric(
-      palette = "YlOrRd",
+      palette = "Blues",
       domain = calls311_merged$count_311calls
     )
     map2=leaflet() %>%
@@ -323,7 +302,8 @@ function(input, output) {
                   highlightOptions=highlightOptions(color="black", 
                                                     weight=2,
                                                     bringToFront=TRUE),
-                  label=~as.character(count_311calls)) %>%
+                  label=labels_hc(calls311_merged@data[,"CT10"],calls311_merged@data[,"count_311calls"]))%>%
+                  #label=~as.character(count_311calls)) %>%
       addLegend(pal=pal2, values = calls311_count$count_311calls,opacity = 0.5)
     map2
   })
