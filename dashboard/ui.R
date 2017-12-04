@@ -7,7 +7,7 @@ library(leaflet)
 #
 
 header = dashboardHeader(
-  title = "City of Los Angeles",
+  title = "Homeless People Measures - City of Los Angeles",
   disable = TRUE#,
   #title = tags$a(href='https://www.lacity.org',
   #               tags$img(src='logo.png', width = "180px", height = "50px")),
@@ -32,8 +32,8 @@ sidebar = dashboardSidebar(
     #title = tags$a(href='https://www.lacity.org',
     #               tags$img(src='logo.png')),
     menuItem("Dashboard", icon = icon("dashboard"), tabName = "dashboard"),
-    menuItem("Homelessness", icon = icon("users"), tabName = "homelessness"),
-    menuItem("Shelter", icon = icon("home"), tabName = "shelter"),
+    #menuItem("Homelessness", icon = icon("users"), tabName = "homelessness"),
+    #menuItem("Shelter", icon = icon("home"), tabName = "shelter"),
     menuItem("Crime", icon = icon("th"), tabName = "crime"),
     menuItem("311 Calls", icon = icon("th"), tabName = "311calls")
     
@@ -170,77 +170,90 @@ body = dashboardBody(
               column(width = 9,
                      box(width = NULL, solidHeader = TRUE,
                          leafletOutput("map_hc", height = 500))))),
-    tabItem(tabName = "shelter",
-            fluidRow(
-              column(width = 9,
-                     box(width = NULL,
-                         leafletOutput("map_crime_1", height = 300)),
-                     box(width = NULL,
-                         title = "Crime Occurance Over Time",
-                         plotOutput('crime_line_1', height = 300))
-                     ),
-              column(width = 3,
-                     box(width = NULL,
-                       textInput("ct_id_1", label = "Census Tract ID", value = "Enter the CT ID")),
-                     box(width = NULL,
-                         title = tags$p("Time Interval", style = "font-size: 100%;"),
-                         sliderInput("range_1", 
-                                     tags$p("Choose the time interval when the crime happened.", style = "font-size: 80%;"), 
-                                     0, 2400, 
-                                     value=c(400,1800),
-                                     sep = "")),
-                     box(width = NULL,
-                         title = "Crime Type",
-                         checkboxGroupInput("crime_type_1","Crime type to show:",
-                                            c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME"),
-                                            selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))
-                     )
-            )
-    ),
     tabItem(tabName = "crime",
             fluidRow(
-              box(
-                textInput("ct_id", label = h3("Census Tract ID"), value = "Enter the ID of the CT that you concerned..."))
-            ),
-            fluidRow(
-              box(width = 12,
-                  leafletOutput("map_crime", height = 350))),
-            fluidRow( 
-              box(width = 12,
-                title = "Time Interval",
-                sliderInput("range", "Choose the time interval when the crime happened.", 0, 2400, value=c(400,1800))
+              column(width = 7,
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-3em",
+                         tags$table(class = "table", style = "padding:0px;", tags$style(HTML("width:100%")),
+                                    tags$tbody(tags$tr(tags$td(h4("Crime Distribution"), style = "border-collapse: collapse", align = "left", width = "10000", tags$style(HTML("height:1000px")))
+                                    )))
+                     ),
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-5em",
+                         box(width = NULL,
+                             leafletOutput("map_crime", height = 670))
+                     )
+                     ),
+              column(width = 5,
+                     #box(width = NULL,
+                    #   textInput("ct_id", label = "Census Tract ID", value = "Enter the CT ID")),
+                    div(style = "font-size: 12px; padding: 14px 0px; margin-top:-3em",
+                        tags$table(class = "table", style = "padding:0px;", tags$style(HTML("width:100%")),
+                                   tags$tbody(tags$tr(tags$td(h4("Daily Crime Trend"), style = "border-collapse: collapse", align = "left", width = "10000", tags$style(HTML("height:1000px")))
+                                   )))
+                    ),
+                    div(style = "font-size: 12px; padding: 14px 0px; margin-top:-5em",
+                      fluidRow(
+                        column(width = 7, 
+                               box(width = NULL, height = 200,
+                                   title = tags$p("Time Interval", style = "font-size: 80%;"),
+                                   sliderInput("range", 
+                                               tags$p("Choose the time interval when the crime happened.", style = "font-size: 90%;"), 
+                                               0, 2400, 
+                                               value=c(400,1800),
+                                               sep = ""))
+                               ),
+                        column(width = 5,
+                               box(width = NULL, height = 200,
+                                   title = tags$p("Crime Type", style = "font-size: 80%;"),
+                                   checkboxGroupInput("crime_type",
+                                                      tags$p("Crime type to show:", style = "font-size: 90%;"), 
+                                                      c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME"),
+                                                      selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))
+                               )
+                        ),
+                      fluidRow(
+                        column(width = 12,
+                               box(width = NULL,
+                                   #title = "Crime Occurance Over Time",
+                                   plotOutput('crime_line', height = 450))
+                        )
+                        )
+                    )
+                    )
               )
-            ),
-            fluidRow(
-              box(title = "Crime Type",
-                  checkboxGroupInput("crime_type","Crime type to show:",
-                                     c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME"),
-                                     selected = c("ASSAULT","ROBBERY","THEFT","SEXUAL_CRIME") ))),
-            fluidRow(  
-              box(width=12,title = "Crime Occurance Over Time",
-                  plotOutput('crime_line')
-                  ))
     ),
     tabItem(tabName = "311calls",
             #h2("311 calls tab content"),
             
             #Main Display
             fluidRow(
-              column(width = 7,
-                     box(width = NULL, solidHeader = TRUE,
-                         leafletOutput("map_311calls", height = 500))),
-              #Right Side Display
-              column(width = 5,
-                     box(width = NULL, status = "warning",
-                         selectInput('top', 'High Frequency 311 Calls Census Tracts',
-                                     c('top five'=5,'top ten'=10,'top fifteen'=15),
-                                     selected = 5)),
-                     box(width = NULL, status = "warning",
-                         plotOutput("bar_311calls", height = 350)
-                     ))))
-    
-    #tags$style(type = "text/css", ".box-body {height:80vh}"),
-)
+              column(width = 12,
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-3em",
+                         tags$table(class = "table", style = "padding:0px;", tags$style(HTML("width:100%")),
+                                    tags$tbody(tags$tr(tags$td(h4("311 Calls: Homeless Encampment"), style = "border-collapse: collapse", align = "left", width = "10000", tags$style(HTML("height:1000px")))
+                                    )))
+                     ),
+                     div(style = "font-size: 12px; padding: 14px 0px; margin-top:-5em",
+                         fluidRow(
+                           column(width = 7,
+                                  box(width = NULL, solidHeader = TRUE,
+                                      leafletOutput("map_311calls", height = 500))),
+                           #Right Side Display
+                           column(width = 5,
+                                  box(width = NULL, status = "primary",
+                                      selectInput('top', 'High Frequency 311 Calls Census Tracts',
+                                                  c('Top 5'=5,'Top 10'=10,'Top 15'=15),
+                                                  selected = 5)),
+                                  box(width = NULL, status = "primary",
+                                      plotOutput("bar_311calls", height = 565)
+                                      )
+                                  )
+                           )
+                         )
+              )
+            )
+    )
+    )
 )
 
 dashboardPage(
