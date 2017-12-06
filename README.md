@@ -5,15 +5,15 @@
 Homelessness has been a growing problem in the city of Los Angeles. Both Measure H and Measure HHH were passed by the voters to grapple with the issue. Measure H is a sales tax measure to fund homeless programs and services and Measure HHH is a $1.2 billion bond measure to provide more affordable housing for the homeless people in the city. The city of Los Angeles asked our team to provide new risk measures for homeless people and recommend locations for building new shelters under the Measures.
 
 ## PROJECT GOAL AND SCOPE
-Our objective was to help the Los Angeles staff to investigate various homeless-related measures, so they can make better decisions as to where to allocate funding and resources, and in which areas to implement certain homeless intervention programs. In this project, we have developed a shiny dashboard that visualizes the density of the homeless as well as various safety risk measures. 
+Our objective was to help the Los Angeles City staff to investigate various homeless-related measures, so they can make better decisions as to where to allocate funding and resources, and in which areas to implement certain homeless intervention programs. In this project, we have developed a shiny dashboard that visualizes the density of the homeless as well as various safety risk measures. 
 
 In order to accomplish this objective, first, we extracted multiple existing measures from the data of the homeless count in 2016 and 2017 collected by LAHSA--a subset of crime data provided by the city (victims were homeless people) and a subset of data from the 311 calls of LA city (regarding homeless encampment). Second, we created new measures such as ratio measures based on the available data. Third, we downloaded geospatial data of the LA County from online and merged it with our homeless-related measure data. 
 
-After cleaning, manipulating and merging data, we created our shiny dashboard. In the shiny dashboard, LA city staff can select and/or combine any of the measures and the geographical level to create customized heat maps. As a secondary function, the dashboard allows LA city staff to look into crime data and shelters data for deep analyses. In the file Final Presentation for LA City Homeless Project (Group9).pdf, we describe our project in detail.
+After cleaning, manipulating and merging data, we created our shiny dashboard. In the shiny dashboard, Los Angeles City staff can select and/or combine any of the measures and the geographical level to create customized heat maps. As a secondary function, the dashboard allows Los Angeles City staff to look into crime data and shelters data for deep analyses. In the file Final Presentation for LA City Homeless Project (Group9).pdf, we describe our project in detail.
 
-In Part I of this document, we describe each file in this folder. In Part II, we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. In Part IV, we demonstrate our example analyses using our dashboard and some insights.
+In Part I of this document, we describe each file in this folder. In Part II, we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. In Part IV, we demonstrate an example analysis using our dashboard and provide general insights.
 
-## Part I. Description of files
+## Part I. Description of Files
 File Name      | Description
 ----------------------------| -----------------------------------
 Final Presentation for LA City Homeless Project(Group9).pdf|The file that describes the dashboard, summary of functions and insights we drew.
@@ -32,10 +32,9 @@ data/shelters_w_CTs20171102134808,csv|Shelters information concerning location, 
 
 ## Part II: Data Merging Process
 
-First, we aggregated homeless count data at census tract level to get the homeless count data at community and city level. So we have homeless count data at three geographical levels. 
+First, we aggregated homeless count data at census tract level to get the homeless count data at community and city level. Therefore, we have homeless count data at three geographical levels.
 Second, we merged crime data and 311 calls data with homeless count data at three geographical levels. 
-
-Third, then we merged the homeless-related measures data with geo data. 
+Third, we merged the homeless-related measures data with geospatial data.
 
 ![dataflow](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dataflow.png)
 
@@ -88,40 +87,38 @@ Note: When shelter number is 0, we add by 1 to allow the computation of ratio.
 
 
 
-
 ## Part IV: Example Analyses
 
 Our dashboard includes three pages: the main dashboard, the crime dashboard and the 311 calls dashboard. We described the dashboard in detail in the Final Presentation for LA City Homeless Project(Group9).pdf
 
-### Part IV-1 Some Insights from the Main Dashboard
+### Part IV-1 General Insights from the Main Dashboard
 
 The following is the snapshot of our main dashboard.
 
 ![dashboard](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dashboard.png)
 
-Using the aggregated measure we created (For more information about our measures, please refer to Part III-V3)., our dashboard visualizes the need for shelters of different communities in LA cities. We recommend four communities for building new shelters, which are also placed on the top of the dashboard. 
+Using the aggregated measure we created (for more information about our measures, please refer to Part III-V3)., our dashboard visualizes the need for shelters in different communities. We recommend four communities for building new shelters, which are also placed on the top of the dashboard. 
 
-You can customize the dashboard to further examine by choosing any of the three geographical levels, 19 Homeless measures and 2 overlay markers.
+Los Angeles City staff can customize the dashboard to further examine by choosing any of the three geographical levels, nineteen homeless measures and two overlay markers.
 
-### Part IV-2 Some Insights from the Crime Dashboard
+### Part IV-2 General Insights from the Crime Dashboard
 
 ![crime](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/crime.png)
 
-Our dashboard illustrates different types of crime where victims are the homeless people. We have included selection features to select the time interval as well as crime type to examine further. 
+Our dashboard illustrates different types of crime where victims are the homeless people. We have included selection features of time interval and crime type to examine further. 
 
-We can conclude two insights from this page: first, the most common risk for unsheltered homeless people is assault. Second, 6 am to 12 am is a relatively safer period for homeless people. 
+We can draw two insights from this page: first, the most common risk for unsheltered homeless people is assault. Second, 6 am to 12 am is a relatively safer period for homeless people. 
 
-### Part IV-3 Some Insights from 311 Calls Dashboard: Homeless Encampment
-
+### Part IV-3 General Insights from 311 Calls Dashboard: Homeless Encampment
 
 ![311call](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/311call.png)
 
-In this page, you can choose different threshold to see a bar graph of  census tracts that have high frequency 311 calls. The heatmap will show these census tracts’ locations. 
+In this page, Los Angeles City staff can set different threshold to see a bar graph of census tracts that have high frequency 311 calls. The heatmap will show these census tracts’ locations. 
 
-From this map, we can see the Top 5 census tracts that have high frequency 311 calls located close to each other.
+From this map, we can see the top five census tracts with the highest frequency of 311 calls are located close to each other.
 
 
-## Part V: Recommendation
+## Part V: Recommendations
 
 Our recommendation for building new shelters within LA is:
 
