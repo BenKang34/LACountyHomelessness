@@ -41,9 +41,11 @@ Third, then we merged the homeless-related measures data with geo data.
 
 
 ## Part III : Homeless People Measures 
-This section describes all measures available for investigation on our dashboard. III-1 refers to measures we extracted from the existing dataset. III-2 are new ratio measures we created based on the existing data. III-3 is an aggregated measure computed from measures in V2. 
+This section describes all measures available for investigation on our dashboard. III-1 refers to measures we extracted from the existing dataset. III-2 are new ratio measures we created based on the existing data. III-3 is an aggregated measure computed from measures in III-2. 
 
 ### III-1 Homeless Count Measures (Existing, 15)
+Measure Name      
+----------------------------
 Total Homeless People
 Total Unsheltered People
 Total Unsheltered People(Log10 Scale)
@@ -126,11 +128,11 @@ Our recommendation for building new shelters within LA is:
 **Encino**\
 **Vermont Square**\
 **Woodland Hills**\
-**Studio City**\
+**Studio City**
 
 Our recommendation for building new shelters outside of LA is:
 
 **Unincorporated Antelope Valley**\
-**Unincorporated Palmdale**\
+**Unincorporated Palmdale**
 
 
