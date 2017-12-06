@@ -91,8 +91,7 @@ Our dashboard includes three pages: the main dashboard, the crime dashboard and 
 
 The following is the snapshot of our main dashboard.
 
-
-
+![dashboard](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dashboard.png)
 
 Using the aggregated measure we created (For more information about our measures, please refer to Part III-V3)., our dashboard visualizes the need for shelters of different communities in LA cities. We recommend four communities for building new shelters, which are also placed on the top of the dashboard. 
 
@@ -100,6 +99,7 @@ You can customize the dashboard to further examine by choosing any of the three 
 
 ### Part IV-2 Some Insights from the Crime Dashboard
 
+![crime](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/crime.png)
 
 Our dashboard illustrates different types of crime where victims are the homeless people. We have included selection features to select the time interval as well as crime type to examine further. 
 
