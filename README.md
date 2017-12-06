@@ -30,7 +30,7 @@ data/lapop.rds|Population of different census tract and geometry information of 
 data/LASpatialData.rda|Polygon data to create map presented in dashboard
 data/shelters_w_CTs20171102134808,csv|Shelters information concerning location, services description, and contact method.
 
-## Part II: Data Merging Process
+## Part II. Data Merging Process
 
 First, we aggregated homeless count data at census tract level to get the homeless count data at community and city level. Therefore, we have homeless count data at three geographical levels.
 Second, we merged crime data and 311 calls data with homeless count data at three geographical levels. 
@@ -39,7 +39,7 @@ Third, we merged the homeless-related measures data with geospatial data.
 ![dataflow](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dataflow.png)
 
 
-## Part III : Homeless People Measures 
+## Part III. Homeless People Measures 
 This section describes all measures available for investigation on our dashboard. III-1 refers to measures we extracted from the existing dataset. III-2 are new ratio measures we created based on the existing data. III-3 is an aggregated measure computed from measures in III-2. 
 
 ### III-1 Homeless Count Measures (Existing, 15)
@@ -87,7 +87,7 @@ Note: When shelter number is 0, we add by 1 to allow the computation of ratio.
 
 
 
-## Part IV: Example Analyses
+## Part IV. Example Analyses
 
 Our dashboard includes three pages: the main dashboard, the crime dashboard and the 311 calls dashboard. We described the dashboard in detail in the Final Presentation for LA City Homeless Project(Group9).pdf
 
@@ -118,7 +118,7 @@ In this page, Los Angeles City staff can set different threshold to see a bar gr
 From this map, we can see the top five census tracts with the highest frequency of 311 calls are located close to each other.
 
 
-## Part V: Recommendations
+## Part V. Recommendations
 
 Our recommendation for building new shelters within LA is:
 
