@@ -87,7 +87,7 @@ Equation:
 
 Our dashboard includes three pages: the main dashboard, the crime dashboard and the 311 calls dashboard. We described the dashboard in detail in the Final Presentation for LA City Homeless Project(Group9).pdf
 
-### Some Insights from the Main Dashboard
+### Part IV-1 Some Insights from the Main Dashboard
 
 The following is the snapshot of our main dashboard.
 
@@ -98,14 +98,14 @@ Using the aggregated measure we created (For more information about our measures
 
 You can customize the dashboard to further examine by choosing any of the three geographical levels, 19 Homeless measures and 2 overlay markers.
 
-### Some Insights from the Crime Dashboard
+### Part IV-2 Some Insights from the Crime Dashboard
 
 
 Our dashboard illustrates different types of crime where victims are the homeless people. We have included selection features to select the time interval as well as crime type to examine further. 
 
 We can conclude two insights from this page: first, the most common risk for unsheltered homeless people is assault. Second, 6 am to 12 am is a relatively safer period for homeless people. 
 
-Some Insights from 311 Calls Dashboard: Homeless Encampment
+### Part IV-3 Some Insights from 311 Calls Dashboard: Homeless Encampment
 
 
 [311 ANALYSIS]
