@@ -108,7 +108,7 @@ We can conclude two insights from this page: first, the most common risk for uns
 ### Part IV-3 Some Insights from 311 Calls Dashboard: Homeless Encampment
 
 
-[311 ANALYSIS]
+![311call](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/311call.png)
 
 In this page, you can choose different threshold to see a bar graph of  census tracts that have high frequency 311 calls. The heatmap will show these census tracts’ locations. 
 
