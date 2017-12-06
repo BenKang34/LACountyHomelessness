@@ -40,10 +40,10 @@ Third, then we merged the homeless-related measures data with geo data.
 ![dataflow](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dataflow.png)
 
 
-Part III : Homeless Measures 
+## Part III : Homeless Measures 
 This section describes all measures available for investigation on our dashboard. V-1 refers to measures we extracted from the existing dataset. V-2 are new ratio measures we created based on the existing data. V-3 is an aggregated measure computed from measures in V2. 
 
-V-1 Homeless Count Measures (Existing, 15):
+###V-1 Homeless Count Measures (Existing, 15)
 Total Homeless People
 Total Unsheltered People
 Total Unsheltered People(Log10 Scale)
@@ -60,7 +60,7 @@ Crime Counts
 Shelter Counts
 Change of Total Unsheltered People = Total Unsheltered People(2017) - Total Unsheltered People(2016)
 
-V-2 Risk Measures for Homeless (New Created,3)
+###V-2 Risk Measures for Homeless (New Created,3)
 Crime to Unsheltered People Ratio = Crime Count / Total Unsheltered People
 
 311 Calls to Unsheltered People Ratio = 311 Calls  Count / Total Unsheltered People
@@ -68,10 +68,10 @@ Crime to Unsheltered People Ratio = Crime Count / Total Unsheltered People
 Total Homeless People to Shelters Ratio = Total Homeless People / Shelter Counts
 
 
-V-3 Aggregated Measure (e.g. Shelters to be located)
+###V-3 Aggregated Measure (e.g. Shelters to be located)
 Our final recommendation is based on some weighting scheme as follows: 
 
-Equation:
+**Equation:**\
 	(Shelters to be located) = w<sub>1</sub> x (CUR/CUR<sub>max</sub>)<sup>2</sup> + w<sub>2</sub> x (EUR/EUR<sub>max</sub>)<sup>2</sup> + w<sub>3</sub> x (THSR/THSR<sub>max</sub>)<sup>2</sup>
 	
        w<sub>1</sub>: Weight of Crime to Unsheltered Homeless Ratio (“CUR”) by default 0.1.
