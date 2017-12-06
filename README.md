@@ -76,13 +76,13 @@ Our final recommendation is based on some weighting scheme as follows:
 **Equation:**\
 	(Shelters to be located) = w<sub>1</sub> x (CUR/CUR<sub>max</sub>)<sup>2</sup> + w<sub>2</sub> x (EUR/EUR<sub>max</sub>)<sup>2</sup> + w<sub>3</sub> x (THSR/THSR<sub>max</sub>)<sup>2</sup>
 	
-w<sub>1</sub>: Weight of Crime to Unsheltered Homeless Ratio (“CUR”) by default 0.1.
+w<sub>1</sub>: Weight of Crime to Unsheltered Homeless People Ratio (“CUR”) by default 0.1 \
 Crime to unsheltered homeless ratio demonstrates the safety risk of unsheltered homeless people are facing.
 
-w<sub>2</sub>: Weight of 311 Calls to Unsheltered Homeless Ratio (“EUR”) by default 0.2
+w<sub>2</sub>: Weight of 311 Calls to Unsheltered Homeless People Ratio (“EUR”) by default 0.2 \
 311 calls to unsheltered homeless ratio reflects the density of unsheltered people in some extent, and partially reflect how tolerant people in the area are regarding homeless encampment.
 
-w<sub>3</sub>: Weight of Total Homeless to Number of Shelters Ratio (“THSR”) by defualt 0.7.
+w<sub>3</sub>: Weight of Total Homeless People to Number of Shelters Ratio (“THSR”) by default 0.7 \
 Total number of homeless people to the number of shelters ratio demonstrate the magnitude of need for resources.
 Note: When shelter number is 0, we add by 1 to allow the computation of ratio.
 
