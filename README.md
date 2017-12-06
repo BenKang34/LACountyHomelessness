@@ -2,7 +2,7 @@
 
 ## BACKGROUND
 
-Homelessness has been a growing problem in the city of Los Angeles. Both Measure H and Measure HHH were passed by the voters to grapple with the issue. Measure H is a sales tax measure to fund homeless services and program and Measure HHH is $1.2 billion bond measure to provide more affordable housing in the city. The city of Los Angeles asked our team to provide new risk measures for homeless people and recommend locations for building new shelters under the propositions.
+Homelessness has been a growing problem in the city of Los Angeles. Both Measure H and Measure HHH were passed by the voters to grapple with the issue. Measure H is a sales tax measure to fund homeless services and program and Measure HHH is a $1.2 billion bond measure to provide more affordable housing in the city. The city of Los Angeles asked our team to provide new risk measures for homeless people and recommend locations for building new shelters under the propositions.
 
 ## PROJECT GOAL AND SCOPE
 In this project, we developed a shiny dashboard that visualizes homelessness density as well as other risk measures for homeless such as safety risk. Our objective was to help LA city staff investigate various homeless-related measures, so they can make decisions such as where to allocate funding and resources, which homeless intervention program to implement in a certain area, etc.
