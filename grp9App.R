@@ -96,7 +96,7 @@ hc2017_ct_subset <- left_join(x = hc2017_ct_subset,
 
 dataGEOID_CT = data.frame(GEOID = lapop$GEOID, tract = lapop$ct)
 
-##Merge hc2017_ct_subset and the GEOID information from lapop
+##Step 3: Merge hc2017_ct_subset and the GEOID information from lapop
 hc2017_ct_subset<-full_join(x=dataGEOID_CT,y=hc2017_ct_subset, by=c("tract" = "tract"))
 hc2016_ct_subset<-full_join(x=dataGEOID_CT,y=hc2016_ct_subset, by=c("tract" = "censusTract"))
 crime_count <- full_join(x=crime_count, y = dataGEOID_CT, by=c("CT10" = "tract"))
@@ -111,7 +111,7 @@ CommunityInLACitylist <- as.factor(CommunityInLACitylist$Community_Name)
 hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[6:17], list(Community = hc2017_ct_subset$Community_Name), sum, na.rm=T)
 hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[6:17], list(City = hc2017_ct_subset$City), sum, na.rm=T)
 
-## Create Measures
+## Step 4: Create Measures
 hc2017_ct_subset <- hc2017_ct_subset %>% 
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
@@ -151,7 +151,7 @@ hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
                                                 totPeople,
                                                 totPeople/count_shelter),NA))
 
-## Get Rankings of potential locations for shelters
+## Create the overall risk index to get rankings of potential locations for shelters
 ## Measures that are considered to rank the geographics
 ## 1. Crime/UnsheltPeople 0.5
 ## 2. 311calls/UnsheltPeople 0.3
@@ -188,10 +188,10 @@ hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
            w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
 
 
-###Remove the datasets that are not needed to save memory
 
 
-### The following code merge the data with the geospatial dataframe, 
+
+### Step 5: The following code merge the data with the geospatial dataframe, 
 ### and creating merged geospatial dataframe objects, 
 ### which can be used to create polygons in leaflet
 
