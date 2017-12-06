@@ -110,6 +110,11 @@ We can conclude two insights from this page: first, the most common risk for uns
 
 [311 ANALYSIS]
 
+In this page, you can choose different threshold to see a bar graph of  census tracts that have high frequency 311 calls. The heatmap will show these census tracts’ locations. 
+
+From this map, we can see the Top 5 census tracts that have high frequency 311 calls located close to each other.
+
+
 ## Part V: Recommendation
 
 Our recommendation for building new shelters within LA is:
