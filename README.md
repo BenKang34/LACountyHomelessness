@@ -35,7 +35,10 @@ data/shelters_w_CTs20171102134808,csv|Shelters information concerning location, 
 First, we aggregated homeless count data at census tract level to get the homeless count data at community and city level. So we have homeless count data at three geographical levels. 
 Second, we merged crime data and 311 calls data with homeless count data at three geographical levels. 
 
-Third, then we merge the homeless-related measures data with geo data. 
+Third, then we merged the homeless-related measures data with geo data. 
+
+![dataflow](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dataflow.png)
+
 
 Part III : Homeless Measures 
 This section describes all measures available for investigation on our dashboard. V-1 refers to measures we extracted from the existing dataset. V-2 are new ratio measures we created based on the existing data. V-3 is an aggregated measure computed from measures in V2. 
@@ -68,18 +71,20 @@ Total Homeless People to Shelters Ratio = Total Homeless People / Shelter Counts
 V-3 Aggregated Measure (e.g. Shelters to be located)
 Our final recommendation is based on some weighting scheme as follows: 
 
-Weight = 10% to Crime to Unsheltered Homeless Ratio (“CUR”).
+Equation:
+	(Shelters to be located) = w<sub>1</sub> x (CUR/CUR<sub>max</sub>)<sup>2</sup> + w<sub>2</sub> x (3UR/3UR<sub>max</sub>)<sup>2</sup> + w<sub>3</sub> x (THSR/THSR<sub>max</sub>)<sup>2</sup>
+	
+w<sub>1</sub>: Weight of Crime to Unsheltered Homeless Ratio (“CUR”) by default 0.1.
 Crime to unsheltered homeless ratio demonstrates the safety risk of unsheltered homeless people are facing.
 
-Weight = 20% to 311 Calls to Unsheltered Homeless Ratio (“3UR”).
+w<sub>2</sub>: Weight of 311 Calls to Unsheltered Homeless Ratio (“EUR”) by default 0.2
 311 calls to unsheltered homeless ratio reflects the density of unsheltered people in some extent, and partially reflect how tolerant people in the area are regarding homeless encampment.
 
-Weight = 70% to Total Homeless to Number of Shelters Ratio (“THSR”).
+w<sub>3</sub>: Weight of Total Homeless to Number of Shelters Ratio (“THSR”) by defualt 0.7.
 Total number of homeless people to the number of shelters ratio demonstrate the magnitude of need for resources.
 Note: When shelter number is 0, we add by 1 to allow the computation of ratio.
 
-Equation:
-	Shelters to be located = 10% * (CUR^2) + 20% * (3UR^2) + 70% * (THSR^2)
+
 
 
 ## Part IV: Example Analyses
