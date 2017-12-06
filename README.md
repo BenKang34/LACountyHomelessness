@@ -2,16 +2,16 @@
 
 ## BACKGROUND
 
-Homelessness has been a growing problem in the city of Los Angeles. Both Measure H and Measure HHH were passed by the voters to grapple with the issue. Measure H is a sales tax measure to fund homeless services and program and Measure HHH is a $1.2 billion bond measure to provide more affordable housing in the city. The city of Los Angeles asked our team to provide new risk measures for homeless people and recommend locations for building new shelters under the propositions.
+Homelessness has been a growing problem in the city of Los Angeles. Both Measure H and Measure HHH were passed by the voters to grapple with the issue. Measure H is a sales tax measure to fund homeless programs and services and Measure HHH is a $1.2 billion bond measure to provide more affordable housing for the homeless people in the city. The city of Los Angeles asked our team to provide new risk measures for homeless people and recommend locations for building new shelters under the Measures.
 
 ## PROJECT GOAL AND SCOPE
-In this project, we developed a shiny dashboard that visualizes homelessness density as well as other risk measures for homeless such as safety risk. Our objective was to help LA city staff investigate various homeless-related measures, so they can make decisions such as where to allocate funding and resources, which homeless intervention program to implement in a certain area, etc.
+Our objective was to help the Los Angeles staff to investigate various homeless-related measures, so they can make better decisions as to where to allocate funding and resources, and in which areas to implement certain homeless intervention programs. In this project, we have developed a shiny dashboard that visualizes the density of the homeless as well as various safety risk measures. 
 
-To accomplish this goal, first, we extracted multiple existing measures from 2017 and 2016 homeless count data collected by LAHSA, a subset of crime data from LA city (victims were homeless people), a subset of 311 calls data from LA city (regarding homeless encampment). Second, we created new measures based on the available data such as ratio measures. Third, we downloaded LA county geospatial data from online and merge it with our homeless-related measure data. 
+In order to accomplish this objective, first, we extracted multiple existing measures from the data of the homeless count in 2016 and 2017 collected by LAHSA--a subset of crime data provided by the city (victims were homeless people) and a subset of data from the 311 calls of LA city (regarding homeless encampment). Second, we created new measures such as ratio measures based on the available data. Third, we downloaded geospatial data of the LA County from online and merged it with our homeless-related measure data. 
 
-After cleaning, manipulating, and merging data, we created our shiny dashboard. In the shiny dashboard, you can select any of the measures and any of the geographical level to create a customized heat map. As a secondary function, the dashboard also allows LA city staff to look into crime data and shelters data for deep analysis. In the file Final Presentation for LA City Homeless Project (Group9).pdf, we describe our project in detail.
+After cleaning, manipulating and merging data, we created our shiny dashboard. In the shiny dashboard, LA city staff can select and/or combine any of the measures and the geographical level to create customized heat maps. As a secondary function, the dashboard allows LA city staff to look into crime data and shelters data for deep analyses. In the file Final Presentation for LA City Homeless Project (Group9).pdf, we describe our project in detail.
 
-In this document, in Part I., we describe each file in this folder. In Part II., we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. Part IV is example analyses done using our dashboard and some insights.
+In Part I of this document, we describe each file in this folder. In Part II, we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. In Part IV, we demonstrate our example analyses done using our dashboard and some insights.
 
 ## Part I. Description of files
 File Name      | Description
