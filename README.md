@@ -44,8 +44,8 @@ Third, then we merged the homeless-related measures data with geo data.
 This section describes all measures available for investigation on our dashboard. III-1 refers to measures we extracted from the existing dataset. III-2 are new ratio measures we created based on the existing data. III-3 is an aggregated measure computed from measures in III-2. 
 
 ### III-1 Homeless Count Measures (Existing, 15)
-Measure Name      
-----------------------------
+Measure Name      |
+----------------------------|
 Total Homeless People
 Total Unsheltered People
 Total Unsheltered People(Log10 Scale)
