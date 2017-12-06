@@ -107,7 +107,7 @@ Los Angeles City staff can customize the dashboard to further examine by choosin
 
 Our dashboard illustrates different types of crime where victims are the homeless people. We have included selection features of time interval and crime type to examine further. 
 
-We can draw two insights from this page: first, the most common risk for unsheltered homeless people is assault. Second, 6 am to 12 am is a relatively safer period for homeless people. 
+We can draw two insights from this page: first, the most common risk for unsheltered homeless people is assault. Second, midnight to 6am is a relatively safer period for homeless people. 
 
 ### Part IV-3 General Insights from 311 Calls Dashboard: Homeless Encampment
 
