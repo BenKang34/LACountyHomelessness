@@ -17,7 +17,7 @@ In this document, in Part I., we describe each file in this folder. In Part II.,
 File Name      | Description
 ----------------------------| -----------------------------------
 Final Presentation for LA City Homeless Project(Group9).pdf|The file that describes the dashboard, summary of functions and insights we drew.
-grp9App.R|The main shiny app script. It loads, merges, transforms data, creates new measures and calls shiny dashboard.\nRun grp9App.R to execute the dashboard.
+grp9App.R|The main shiny app script. It loads, merges, transforms data, creates new measures and calls shiny dashboard. Run grp9App.R to execute the dashboard.
 dashboard/server.R|The server file for dashboard
 dashboard/ui.R|The ui file for dashboard
 dashboard/www|The folder containing LA city images for dashboard
