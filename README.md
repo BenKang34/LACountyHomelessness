@@ -40,10 +40,10 @@ Third, then we merged the homeless-related measures data with geo data.
 ![dataflow](https://github.com/BenKang34/LACountyHomelessness/blob/master/images/dataflow.png)
 
 
-## Part III : Homeless Measures 
-This section describes all measures available for investigation on our dashboard. V-1 refers to measures we extracted from the existing dataset. V-2 are new ratio measures we created based on the existing data. V-3 is an aggregated measure computed from measures in V2. 
+## Part III : Homeless People Measures 
+This section describes all measures available for investigation on our dashboard. III-1 refers to measures we extracted from the existing dataset. III-2 are new ratio measures we created based on the existing data. III-3 is an aggregated measure computed from measures in V2. 
 
-###V-1 Homeless Count Measures (Existing, 15)
+### III-1 Homeless Count Measures (Existing, 15)
 Total Homeless People
 Total Unsheltered People
 Total Unsheltered People(Log10 Scale)
@@ -60,7 +60,7 @@ Crime Counts
 Shelter Counts
 Change of Total Unsheltered People = Total Unsheltered People(2017) - Total Unsheltered People(2016)
 
-###V-2 Risk Measures for Homeless (New Created,3)
+### III-2 Risk Measures for Homeless (New Created,3)
 Crime to Unsheltered People Ratio = Crime Count / Total Unsheltered People
 
 311 Calls to Unsheltered People Ratio = 311 Calls  Count / Total Unsheltered People
@@ -68,20 +68,20 @@ Crime to Unsheltered People Ratio = Crime Count / Total Unsheltered People
 Total Homeless People to Shelters Ratio = Total Homeless People / Shelter Counts
 
 
-###V-3 Aggregated Measure (e.g. Shelters to be located)
+### III-3 Aggregated Measure (e.g. Shelters to be located)
 Our final recommendation is based on some weighting scheme as follows: 
 
 **Equation:**\
 	(Shelters to be located) = w<sub>1</sub> x (CUR/CUR<sub>max</sub>)<sup>2</sup> + w<sub>2</sub> x (EUR/EUR<sub>max</sub>)<sup>2</sup> + w<sub>3</sub> x (THSR/THSR<sub>max</sub>)<sup>2</sup>
 	
-       w<sub>1</sub>: Weight of Crime to Unsheltered Homeless Ratio (“CUR”) by default 0.1.
-              Crime to unsheltered homeless ratio demonstrates the safety risk of unsheltered homeless people are facing.
+w<sub>1</sub>: Weight of Crime to Unsheltered Homeless Ratio (“CUR”) by default 0.1.
+Crime to unsheltered homeless ratio demonstrates the safety risk of unsheltered homeless people are facing.
 
-       w<sub>2</sub>: Weight of 311 Calls to Unsheltered Homeless Ratio (“EUR”) by default 0.2
-              311 calls to unsheltered homeless ratio reflects the density of unsheltered people in some extent, and partially reflect how tolerant people in the area are regarding homeless encampment.
+w<sub>2</sub>: Weight of 311 Calls to Unsheltered Homeless Ratio (“EUR”) by default 0.2
+311 calls to unsheltered homeless ratio reflects the density of unsheltered people in some extent, and partially reflect how tolerant people in the area are regarding homeless encampment.
 
-       w<sub>3</sub>: Weight of Total Homeless to Number of Shelters Ratio (“THSR”) by defualt 0.7.
-              Total number of homeless people to the number of shelters ratio demonstrate the magnitude of need for resources.
+w<sub>3</sub>: Weight of Total Homeless to Number of Shelters Ratio (“THSR”) by defualt 0.7.
+Total number of homeless people to the number of shelters ratio demonstrate the magnitude of need for resources.
 Note: When shelter number is 0, we add by 1 to allow the computation of ratio.
 
 
@@ -123,14 +123,14 @@ From this map, we can see the Top 5 census tracts that have high frequency 311 c
 
 Our recommendation for building new shelters within LA is:
 
-Encino
-Vermont Square
-Woodland Hills
-Studio City
+**Encino**\
+**Vermont Square**\
+**Woodland Hills**\
+**Studio City**\
 
 Our recommendation for building new shelters outside of LA is:
 
-Unincorporated Antelope Valley
-Unincorporated Palmdale
+**Unincorporated Antelope Valley**\
+**Unincorporated Palmdale**\
 
 
