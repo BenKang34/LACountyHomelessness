@@ -11,7 +11,7 @@ In order to accomplish this objective, first, we extracted multiple existing mea
 
 After cleaning, manipulating and merging data, we created our shiny dashboard. In the shiny dashboard, LA city staff can select and/or combine any of the measures and the geographical level to create customized heat maps. As a secondary function, the dashboard allows LA city staff to look into crime data and shelters data for deep analyses. In the file Final Presentation for LA City Homeless Project (Group9).pdf, we describe our project in detail.
 
-In Part I of this document, we describe each file in this folder. In Part II, we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. In Part IV, we demonstrate our example analyses done using our dashboard and some insights.
+In Part I of this document, we describe each file in this folder. In Part II, we illustrate our data merging process. In Part III, we describe all the existing and new homeless related measures. In Part IV, we demonstrate our example analyses using our dashboard and some insights.
 
 ## Part I. Description of files
 File Name      | Description
