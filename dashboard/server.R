@@ -118,9 +118,37 @@ hcmapTool<-function(LAmapdata,geolevel,hc,color="YlOrRd"){
 
 ## Shiny App Server Function
 function(input, output) {
-
+  
   RankDataInput <- reactive({
-    hc2017_ct_subset.comm %>%
+     if (input$catHC %in% c("Total Unsheltered People","Total Sheltered People","Total Street Single Adult","Total Street Family Members","Total Youth Family Households","Total Unaccompanied Kids in Shelters","Total Unaccompanied Kids in Shelters", "Total Single Youth in Shelters" )) {
+       crime_ratio = switch(input$catHC,
+                            "Total Unsheltered People" = hc2017_ct_subset.comm$CrimeUnsheltRatio,
+                            "Total Sheltered People" = hc2017_ct_subset.comm$CrimeSheltRatio,
+                            "Total Street Single Adult" = hc2017_ct_subset.comm$CrimeSSARatio,
+                            "Total Street Family Members" = hc2017_ct_subset.comm$CrimeSFMRatio,
+                            "Total Youth Family Households" = hc2017_ct_subset.comm$CrimeYFHRatio,
+                            "Total Unaccompanied Kids in Shelters" = hc2017_ct_subset.comm$CrimeUAMRatio,
+                            "Total Single Youth in Shelters" = hc2017_ct_subset.comm$CrimeSYRatio)
+       calls_ratio = switch(input$catHC,
+                            "Total Unsheltered People" = hc2017_ct_subset.comm$CallsUnsheltRatio,
+                            "Total Sheltered People" = hc2017_ct_subset.comm$CallsSheltRatio,
+                            "Total Street Single Adult" = hc2017_ct_subset.comm$CallsSSARatio,
+                            "Total Street Family Members" = hc2017_ct_subset.comm$CallsSFMRatio,
+                            "Total Youth Family Households" = hc2017_ct_subset.comm$CallsYFHRatio,
+                            "Total Unaccompanied Kids in Shelters" = hc2017_ct_subset.comm$CallsUAMRatio,
+                            "Total Single Youth in Shelters" = hc2017_ct_subset.comm$CallsSYRatio)
+     } else{crime_ratio=hc2017_ct_subset.comm$CrimeUnsheltRatio
+     calls_ratio=hc2017_ct_subset.comm$CallsUnsheltRatio}
+
+     
+       maxCrime <- max(hc2017_ct_subset.comm$CrimeUnsheltRatio, na.rm = T)
+       maxCalls <- max(hc2017_ct_subset.comm$CallsUnsheltRatio, na.rm = T)
+       maxSheltersToTotalpeople <- max(hc2017_ct_subset.comm$TotPeopleSheltersRatio, na.rm = T) 
+       hc2017_ct_subset.comm$RankShelterLocation = (w1*(crime_ratio/maxCrime)^2+
+                           w2*(calls_ratio/maxCalls)^2+
+                           w3*(hc2017_ct_subset.comm$TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)  
+
+    hc2017_ct_subset.comm %>%        
       filter(Community %in% CommunityInLACitylist) %>%
       select(Community, totUnsheltPeople, count_shelter, RankShelterLocation) %>%
       arrange(-RankShelterLocation)%>%

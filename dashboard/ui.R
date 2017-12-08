@@ -160,7 +160,7 @@ body = dashboardBody(
                                        selectInput("catHC",
                                                    label = "Choose the category of homeless measures:",
                                                    choices = titles,
-                                                   selected = "Shelters to be located"))))
+                                                   selected = "Total Unsheltered People"))))
                      )
               )
             )

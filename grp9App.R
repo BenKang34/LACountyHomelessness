@@ -112,6 +112,7 @@ hc2017_ct_subset.comm <- aggregate(hc2017_ct_subset[6:17], list(Community = hc20
 hc2017_ct_subset.city <- aggregate(hc2017_ct_subset[6:17], list(City = hc2017_ct_subset$City), sum, na.rm=T)
 
 ## Step 4: Create Measures
+
 hc2017_ct_subset <- hc2017_ct_subset %>% 
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
@@ -124,32 +125,95 @@ hc2017_ct_subset <- hc2017_ct_subset %>%
                                          totPeople,
                                          totPeople/count_shelter))
 
-
+####community
+#hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>% 
+#  mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
+#  mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
+#  mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
+#  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
+#                                    count_crime/totUnsheltPeople,NA)) %>%
+#  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
+#                                    count_311calls/totUnsheltPeople,NA)) %>%
+#  mutate(TotPeopleSheltersRatio = ifelse(totPeople > 10,
+#                                         ifelse(count_shelter==0,
+#                                                totPeople,
+#                                               totPeople/count_shelter),NA))
 hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>% 
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
   mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
-  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
-                                    count_crime/totUnsheltPeople,NA)) %>%
-  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
-                                    count_311calls/totUnsheltPeople,NA)) %>%
   mutate(TotPeopleSheltersRatio = ifelse(totPeople > 10,
                                          ifelse(count_shelter==0,
                                                 totPeople,
                                                 totPeople/count_shelter),NA))
+hc2017_ct_subset.comm = hc2017_ct_subset.comm %>%  
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,count_crime/totUnsheltPeople,NA)) %>%
+  mutate(CrimeSheltRatio = ifelse(totSheltPeople > 10 & Community %in% CommunityInLACitylist,count_crime/totSheltPeople,NA)) %>%
+  mutate(CrimeSSARatio = ifelse(totStreetSingAdult > 10 & Community %in% CommunityInLACitylist,count_crime/totStreetSingAdult,NA)) %>%
+  mutate(CrimeSFMRatio = ifelse(totStreetFamMem > 10 & Community %in% CommunityInLACitylist,count_crime/totStreetFamMem,NA)) %>%
+  mutate(CrimeYFHRatio = ifelse(totYouthFamHH > 10 & Community %in% CommunityInLACitylist,count_crime/totYouthFamHH,NA)) %>%
+  mutate(CrimeUAMRatio = ifelse(totUnAccMinor_sheltered > 10 & Community %in% CommunityInLACitylist,count_crime/totUnAccMinor_sheltered,NA)) %>%
+  mutate(CrimeSYRatio = ifelse(totSingleYouth_sheltered > 10 & Community %in% CommunityInLACitylist,count_crime/totSingleYouth_sheltered,NA)) %>%
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 10 & Community %in% CommunityInLACitylist,
+                                    count_311calls/totUnsheltPeople,NA)) %>%
+  mutate(CallsSheltRatio = ifelse(totSheltPeople > 10 & Community %in% CommunityInLACitylist,
+                                  count_311calls/totSheltPeople,NA)) %>%
+  mutate(CallsSSARatio = ifelse(totStreetSingAdult > 10 & Community %in% CommunityInLACitylist,
+                                count_311calls/totStreetSingAdult,NA)) %>%
+  mutate(CallsSFMRatio = ifelse(totStreetFamMem > 10 & Community %in% CommunityInLACitylist,
+                                count_311calls/totStreetFamMem,NA)) %>%
+  mutate(CallsYFHRatio = ifelse(totYouthFamHH > 10 & Community %in% CommunityInLACitylist,
+                                count_311calls/totYouthFamHH,NA)) %>%
+  mutate(CallsUAMRatio = ifelse(totUnAccMinor_sheltered > 10 & Community %in% CommunityInLACitylist,
+                                count_311calls/totUnAccMinor_sheltered,NA)) %>%
+  mutate(CallsSYRatio = ifelse(totSingleYouth_sheltered > 10 & Community %in% CommunityInLACitylist,
+                               count_311calls/totSingleYouth_sheltered,NA)) 
+
+#####city
+#hc2017_ct_subset.city <- hc2017_ct_subset.city %>% 
+#  mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
+#  mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
+#  mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
+#  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
+#                                    count_crime/totUnsheltPeople, NA)) %>%
+#  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
+#                                    count_311calls/totUnsheltPeople, NA)) %>%
+#  mutate(TotPeopleSheltersRatio = ifelse(totPeople > 20,
+#                                         ifelse(count_shelter==0,
+#                                                totPeople,
+#                                                totPeople/count_shelter),NA))
 
 hc2017_ct_subset.city <- hc2017_ct_subset.city %>% 
   mutate(totUnsheltChanges = totUnsheltPeople - totUnsheltPeople.2016) %>% 
   mutate(LNtotSheltPeople = ifelse(totSheltPeople > 0, log10(totSheltPeople), NA)) %>%
   mutate(LNtotUnsheltPeople = ifelse(totUnsheltPeople > 0, log10(totUnsheltPeople), NA)) %>%
-  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
-                                    count_crime/totUnsheltPeople, NA)) %>%
-  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
-                                    count_311calls/totUnsheltPeople, NA)) %>%
   mutate(TotPeopleSheltersRatio = ifelse(totPeople > 20,
                                          ifelse(count_shelter==0,
                                                 totPeople,
                                                 totPeople/count_shelter),NA))
+hc2017_ct_subset.city = hc2017_ct_subset.city %>%  
+  mutate(CrimeUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",count_crime/totUnsheltPeople,NA)) %>%
+  mutate(CrimeSheltRatio = ifelse(totSheltPeople > 20 & City == "Los Angeles",count_crime/totSheltPeople,NA)) %>%
+  mutate(CrimeSSARatio = ifelse(totStreetSingAdult > 20 & City == "Los Angeles",count_crime/totStreetSingAdult,NA)) %>%
+  mutate(CrimeSFMRatio = ifelse(totStreetFamMem > 20 & City == "Los Angeles",count_crime/totStreetFamMem,NA)) %>%
+  mutate(CrimeYFHRatio = ifelse(totYouthFamHH > 20 & City == "Los Angeles",count_crime/totYouthFamHH,NA)) %>%
+  mutate(CrimeUAMRatio = ifelse(totUnAccMinor_sheltered > 20 & City == "Los Angeles",count_crime/totUnAccMinor_sheltered,NA)) %>%
+  mutate(CrimeSYRatio = ifelse(totSingleYouth_sheltered >20 & City == "Los Angeles",count_crime/totSingleYouth_sheltered,NA)) %>%
+  mutate(CallsUnsheltRatio = ifelse(totUnsheltPeople > 20 & City == "Los Angeles",
+                                    count_311calls/totUnsheltPeople,NA)) %>%
+  mutate(CallsSheltRatio = ifelse(totSheltPeople > 20 & City == "Los Angeles",
+                                  count_311calls/totSheltPeople,NA)) %>%
+  mutate(CallsSSARatio = ifelse(totStreetSingAdult > 20 & City == "Los Angeles",
+                                count_311calls/totStreetSingAdult,NA)) %>%
+  mutate(CallsSFMRatio = ifelse(totStreetFamMem > 20 & City == "Los Angeles",
+                                count_311calls/totStreetFamMem,NA)) %>%
+  mutate(CallsYFHRatio = ifelse(totYouthFamHH > 20 & City == "Los Angeles",
+                                count_311calls/totYouthFamHH,NA)) %>%
+  mutate(CallsUAMRatio = ifelse(totUnAccMinor_sheltered > 20 & City == "Los Angeles",
+                                count_311calls/totUnAccMinor_sheltered,NA)) %>%
+  mutate(CallsSYRatio = ifelse(totSingleYouth_sheltered > 20 & City == "Los Angeles",
+                               count_311calls/totSingleYouth_sheltered,NA)) 
+
 
 ## Create the overall risk index to get rankings of potential locations for shelters
 ## Measures that are considered to rank the geographics
@@ -169,23 +233,23 @@ hc2017_ct_subset <- hc2017_ct_subset %>%
            w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
            w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
 
-maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.comm$CrimeUnsheltRatio, na.rm = T)
-maxCallsToUnshltpeople <- max(hc2017_ct_subset.comm$CallsUnsheltRatio, na.rm = T)
-maxSheltersToTotalpeople <- max(hc2017_ct_subset.comm$TotPeopleSheltersRatio, na.rm = T)
+#maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.comm$CrimeUnsheltRatio, na.rm = T)
+#maxCallsToUnshltpeople <- max(hc2017_ct_subset.comm$CallsUnsheltRatio, na.rm = T)
+#maxSheltersToTotalpeople <- max(hc2017_ct_subset.comm$TotPeopleSheltersRatio, na.rm = T)
 
-hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>%
-  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
-           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
-           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
+#hc2017_ct_subset.comm <- hc2017_ct_subset.comm %>%
+#  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
+#           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
+#           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
 
-maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.city$CrimeUnsheltRatio, na.rm = T)
-maxCallsToUnshltpeople <- max(hc2017_ct_subset.city$CallsUnsheltRatio, na.rm = T)
-maxSheltersToTotalpeople <- max(hc2017_ct_subset.city$TotPeopleSheltersRatio, na.rm = T)
+#maxCrimeToUnsheltpeople <- max(hc2017_ct_subset.city$CrimeUnsheltRatio, na.rm = T)
+#maxCallsToUnshltpeople <- max(hc2017_ct_subset.city$CallsUnsheltRatio, na.rm = T)
+#maxSheltersToTotalpeople <- max(hc2017_ct_subset.city$TotPeopleSheltersRatio, na.rm = T)
 
-hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
-  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
-           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
-           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
+#hc2017_ct_subset.city <- hc2017_ct_subset.city %>%
+#  mutate(RankShelterLocation = w1*(CrimeUnsheltRatio/maxCrimeToUnsheltpeople)^2+
+#           w2*(CallsUnsheltRatio/maxCallsToUnshltpeople)^2+
+#           w3*(TotPeopleSheltersRatio/maxSheltersToTotalpeople)^2)
 
 
 
@@ -242,8 +306,7 @@ titles<-c("Total Homeless People",
           "Total Unsheltered People(Log10 Scale)",
           "Crimes to Unsheltered People Ratio",
           "311 Calls to Unsheltered People Ratio",
-          "Total Homeless People to Shelters Ratio",
-          "Shelters to be located")
+          "Total Homeless People to Shelters Ratio")#,"Shelters to be located")
 
 ###remove the datasets that are not needed to save memory
 #rm(hc2016,hc2016_ct_subset,hc2017_com, hc2017_ct, hc2017_ct_subset,
